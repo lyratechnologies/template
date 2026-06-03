@@ -1,5 +1,4 @@
 import { readdirSync } from "node:fs";
-
 import nextVitals from "eslint-config-next/core-web-vitals";
 import tseslint from "typescript-eslint";
 
@@ -87,6 +86,7 @@ const cleanArchitectureImportRestrictions = featureNames.flatMap(
               {
                 group: [
                   "../api/**",
+                  "../adapters/**",
                   "../repositories/**",
                   "../services/**",
                   "../ui/**",
@@ -150,6 +150,7 @@ const cleanArchitectureImportRestrictions = featureNames.flatMap(
               {
                 group: [
                   "../api/**",
+                  "../adapters/**",
                   "../ui/**",
                   "~/server/**",
                   "~/trpc/**",
@@ -206,6 +207,7 @@ const cleanArchitectureImportRestrictions = featureNames.flatMap(
               {
                 group: [
                   "../api/**",
+                  "../adapters/**",
                   "../services/**",
                   "../ui/**",
                   "~/server/api/**",
@@ -215,7 +217,63 @@ const cleanArchitectureImportRestrictions = featureNames.flatMap(
                   "react-dom/**",
                 ],
                 message:
-                  "Repositories adapt persistence to domain contracts. They may import domain modules, repository contracts, and persistence adapters only.",
+                  "Repositories are persistence contracts. They may import domain modules, but not adapters, services, API, UI, or infrastructure.",
+              },
+            ],
+          },
+        ],
+      },
+    },
+    {
+      files: [
+        `src/features/${featureName}/adapters/**/*.ts`,
+        `src/features/${featureName}/adapters/**/*.tsx`,
+      ],
+      rules: {
+        "no-restricted-imports": [
+          "error",
+          {
+            paths: [
+              {
+                name: "react",
+                message:
+                  "Adapters must stay UI-independent. Move React usage to ui.",
+              },
+              {
+                name: "@tanstack/react-query",
+                message:
+                  "Adapters must stay UI-independent. Move React Query usage to ui/shared UI.",
+              },
+              {
+                name: "@trpc/server",
+                message:
+                  "Adapters must not depend on transport concerns. Keep tRPC in api.",
+              },
+              {
+                name: "@trpc/client",
+                message:
+                  "Adapters must not depend on transport concerns. Keep tRPC in api or ui.",
+              },
+              {
+                name: "better-auth",
+                message:
+                  "Adapters must not depend on auth infrastructure. Pass explicit IDs from services/api.",
+              },
+            ],
+            patterns: [
+              {
+                group: [
+                  "../api/**",
+                  "../services/**",
+                  "../ui/**",
+                  "~/server/api/**",
+                  "~/server/auth/**",
+                  "~/trpc/**",
+                  "next/**",
+                  "react-dom/**",
+                ],
+                message:
+                  "Adapters implement outbound infrastructure. They may import domain modules, repository contracts, and persistence libraries only.",
               },
             ],
           },
@@ -267,6 +325,7 @@ const cleanArchitectureImportRestrictions = featureNames.flatMap(
               {
                 group: [
                   "../repositories/**",
+                  "../adapters/**",
                   "~/server/db",
                   "~/server/db/**",
                   "generated/**",

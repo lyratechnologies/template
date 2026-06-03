@@ -15,6 +15,7 @@ src/
       domain/
       services/
       repositories/
+      adapters/
       api/
       ui/
       index.ts
@@ -39,7 +40,8 @@ generated/
 
 - `domain/` owns business concepts, invariants, value objects, and Zod-first domain schemas.
 - `services/` owns application services: use-case workflows, input/output schemas, typed outcomes, and dependencies expressed as repository contracts.
-- `repositories/` owns persistence contracts, Prisma implementations, generated schema usage, and persistence-to-domain mapping.
+- `repositories/` owns persistence contracts that services depend on.
+- `adapters/` owns concrete outbound implementations, such as Prisma adapters, generated schema usage, and persistence-to-domain mapping.
 - `api/` owns tRPC routers and transport translation.
 - `ui/` owns feature containers, presentational components, and feature hooks.
 - `src/app` is routing composition only. Route files import feature page containers.
@@ -106,13 +108,20 @@ export const RegisterForEventOutputSchema = z.discriminatedUnion("status", [
 
 Throw only for system failures, authorization failures, permission failures, or unexpected states.
 
-## Repositories And Transactions
+## Repositories, Adapters, And Transactions
 
-Repositories are named after feature concepts, such as `EventRepository` and `RegistrationRepository`, but their methods should be shaped by workflows rather than generic CRUD. Services depend on the narrow subset of repository methods they need, for example through `Pick<EventRepository, "findRegistrationSnapshot">`, so the repository name stays familiar without turning each service into a broad persistence client.
+Repository contracts are named after feature concepts, such as `EventRepository` and `RegistrationRepository`, but their methods should be shaped by workflows rather than generic CRUD. Services depend on the narrow subset of repository methods they need, for example through `Pick<EventRepository, "findRegistrationSnapshot">`, so the repository name stays familiar without turning each service into a broad persistence client.
 
 Reusable repository contracts live in `repositories/`. Service files define only the narrowed dependency composition they consume.
 
-Prisma repositories expose factories for service dependencies:
+Concrete outbound adapters live in `adapters/`. Prisma adapters expose factories for service dependencies:
+
+```txt
+src/features/events/adapters/
+  prisma-event-adapter.ts
+  prisma-registration-adapter.ts
+  helper.ts
+```
 
 ```ts
 export function createPrismaRegisterForEventRepositories(

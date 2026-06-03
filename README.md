@@ -40,6 +40,7 @@ src/features/
     domain/
     services/
     repositories/
+    adapters/
     api/
     ui/
     index.ts
@@ -139,15 +140,14 @@ type RegisterForEventOutput =
   | { status: "rejected"; reason: RegisterForEventRejectionReason };
 ```
 
-### 4. Repositories Adapt Persistence
+### 4. Repositories Define Ports, Adapters Implement Them
 
-Repositories live in `repositories/`. They define contracts used by services and implementations that adapt persistence to domain shapes.
+Repository contracts live in `repositories/`. They define the persistence operations that services need without committing those services to Prisma, SQL, HTTP, or any other concrete technology.
 
 ```txt
 src/features/events/repositories/
   event-repository.ts
   registration-repository.ts
-  prisma-events-repositories.ts
 ```
 
 Repository interfaces are named after feature concepts, but methods are shaped by workflows rather than generic CRUD.
@@ -162,7 +162,16 @@ export interface EventRepository {
 }
 ```
 
-The Prisma implementation imports generated Prisma types and maps database records into domain summaries. Generated Prisma types stay here, not in domain or service code.
+Concrete outbound adapters live in `adapters/`.
+
+```txt
+src/features/events/adapters/
+  prisma-event-adapter.ts
+  prisma-registration-adapter.ts
+  helper.ts
+```
+
+The Prisma adapter imports generated Prisma types and maps database records into domain summaries. Generated Prisma types stay in adapters, not in domain or service code.
 
 ### 5. tRPC Routers Are Transport Boundaries
 
@@ -267,6 +276,10 @@ feature/services
 
 feature/repositories
   -> feature domain
+
+feature/adapters
+  -> feature domain
+  -> feature repository contracts
   -> generated Prisma / persistence adapters
 
 feature/domain
@@ -312,7 +325,7 @@ feature/api
 feature/services  --->  feature/repositories/contracts
     |                         ^
     v                         |
-feature/domain       feature/repositories/prisma
+feature/domain       feature/adapters/prisma
                               |
                               v
                       generated/prisma + database
@@ -344,7 +357,10 @@ src/
       repositories/
         event-repository.ts
         registration-repository.ts
-        prisma-events-repositories.ts
+      adapters/
+        prisma-event-adapter.ts
+        prisma-registration-adapter.ts
+        helper.ts
       api/
         events-router.ts
       ui/

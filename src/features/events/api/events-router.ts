@@ -7,10 +7,8 @@ import {
   publicProcedure,
 } from "~/server/api/trpc";
 
-import {
-  createPrismaEventRepository,
-  createPrismaRegistrationRepository,
-} from "../repositories/prisma-events-repositories";
+import { createPrismaEventRepository } from "../adapters/prisma-event-adapter";
+import { createPrismaRegistrationRepository } from "../adapters/prisma-registration-adapter";
 import {
   cancelRegistration,
   CancelRegistrationInputSchema,

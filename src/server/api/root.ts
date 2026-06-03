@@ -1,4 +1,7 @@
-import { postRouter } from "~/server/api/routers/post";
+import "server-only";
+
+import { eventsRouter } from "~/features/events/api/events-router";
+import { notificationsRouter } from "~/features/notifications/api/notifications-router";
 import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
 
 /**
@@ -7,7 +10,8 @@ import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
  * All routers added in /api/routers should be manually added here.
  */
 export const appRouter = createTRPCRouter({
-  post: postRouter,
+  events: eventsRouter,
+  notifications: notificationsRouter,
 });
 
 // export type definition of API
@@ -17,7 +21,7 @@ export type AppRouter = typeof appRouter;
  * Create a server-side caller for the tRPC API.
  * @example
  * const trpc = createCaller(createContext);
- * const res = await trpc.post.all();
- *       ^? Post[]
+ * const res = await trpc.events.registerForEvent();
+ *       ^? RegisterForEventOutput
  */
 export const createCaller = createCallerFactory(appRouter);

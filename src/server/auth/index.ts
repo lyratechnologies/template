@@ -1,10 +1,26 @@
-import { cache } from "react";
-import NextAuth from "next-auth";
+import "server-only";
 
-import { authConfig } from "./config";
+import { betterAuth } from "better-auth";
+import { prismaAdapter } from "better-auth/adapters/prisma";
+import { nextCookies } from "better-auth/next-js";
 
-const { auth: uncachedAuth, handlers, signIn, signOut } = NextAuth(authConfig);
+import { env } from "~/env";
+import { db } from "~/server/db";
 
-const auth = cache(uncachedAuth);
+export const auth = betterAuth({
+  appName: "Lyra Template",
+  baseURL: env.BETTER_AUTH_URL,
+  secret: env.BETTER_AUTH_SECRET,
+  database: prismaAdapter(db, {
+    provider: "sqlite",
+  }),
+  socialProviders: {
+    google: {
+      clientId: env.AUTH_GOOGLE_ID,
+      clientSecret: env.AUTH_GOOGLE_SECRET,
+    },
+  },
+  plugins: [nextCookies()],
+});
 
-export { auth, handlers, signIn, signOut };
+export type AuthSession = typeof auth.$Infer.Session;

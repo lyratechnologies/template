@@ -1,0 +1,15 @@
+import type { Prisma } from '../../prisma/client';
+import * as z from 'zod';
+import { WaitlistEntryWhereInputObjectSchema as WaitlistEntryWhereInputObjectSchema } from './objects/WaitlistEntryWhereInput.schema';
+import { WaitlistEntryOrderByWithAggregationInputObjectSchema as WaitlistEntryOrderByWithAggregationInputObjectSchema } from './objects/WaitlistEntryOrderByWithAggregationInput.schema';
+import { WaitlistEntryScalarWhereWithAggregatesInputObjectSchema as WaitlistEntryScalarWhereWithAggregatesInputObjectSchema } from './objects/WaitlistEntryScalarWhereWithAggregatesInput.schema';
+import { WaitlistEntryScalarFieldEnumSchema } from './enums/WaitlistEntryScalarFieldEnum.schema';
+import { WaitlistEntryCountAggregateInputObjectSchema as WaitlistEntryCountAggregateInputObjectSchema } from './objects/WaitlistEntryCountAggregateInput.schema';
+import { WaitlistEntryMinAggregateInputObjectSchema as WaitlistEntryMinAggregateInputObjectSchema } from './objects/WaitlistEntryMinAggregateInput.schema';
+import { WaitlistEntryMaxAggregateInputObjectSchema as WaitlistEntryMaxAggregateInputObjectSchema } from './objects/WaitlistEntryMaxAggregateInput.schema';
+import { WaitlistEntryAvgAggregateInputObjectSchema as WaitlistEntryAvgAggregateInputObjectSchema } from './objects/WaitlistEntryAvgAggregateInput.schema';
+import { WaitlistEntrySumAggregateInputObjectSchema as WaitlistEntrySumAggregateInputObjectSchema } from './objects/WaitlistEntrySumAggregateInput.schema';
+
+export const WaitlistEntryGroupBySchema: z.ZodType<Prisma.WaitlistEntryGroupByArgs> = z.object({ where: WaitlistEntryWhereInputObjectSchema.optional(), orderBy: z.union([WaitlistEntryOrderByWithAggregationInputObjectSchema, WaitlistEntryOrderByWithAggregationInputObjectSchema.array()]).optional(), having: WaitlistEntryScalarWhereWithAggregatesInputObjectSchema.optional(), take: z.number().optional(), skip: z.number().optional(), by: z.array(WaitlistEntryScalarFieldEnumSchema), _count: z.union([ z.literal(true), WaitlistEntryCountAggregateInputObjectSchema ]).optional(), _min: WaitlistEntryMinAggregateInputObjectSchema.optional(), _max: WaitlistEntryMaxAggregateInputObjectSchema.optional(), _avg: WaitlistEntryAvgAggregateInputObjectSchema.optional(), _sum: WaitlistEntrySumAggregateInputObjectSchema.optional() }).strict() as unknown as z.ZodType<Prisma.WaitlistEntryGroupByArgs>;
+
+export const WaitlistEntryGroupByZodSchema = z.object({ where: WaitlistEntryWhereInputObjectSchema.optional(), orderBy: z.union([WaitlistEntryOrderByWithAggregationInputObjectSchema, WaitlistEntryOrderByWithAggregationInputObjectSchema.array()]).optional(), having: WaitlistEntryScalarWhereWithAggregatesInputObjectSchema.optional(), take: z.number().optional(), skip: z.number().optional(), by: z.array(WaitlistEntryScalarFieldEnumSchema), _count: z.union([ z.literal(true), WaitlistEntryCountAggregateInputObjectSchema ]).optional(), _min: WaitlistEntryMinAggregateInputObjectSchema.optional(), _max: WaitlistEntryMaxAggregateInputObjectSchema.optional(), _avg: WaitlistEntryAvgAggregateInputObjectSchema.optional(), _sum: WaitlistEntrySumAggregateInputObjectSchema.optional() }).strict();

@@ -1,35 +1,35 @@
 /**
  * SSR Streaming Pattern Component
- * 
+ *
  * This component implements React's Suspense streaming pattern with tRPC,
  * enabling progressive rendering and optimal performance.
- * 
+ *
  * How it works:
  * 1. Server prefetches data using tRPC queries
  * 2. React streams HTML to client while data loads
  * 3. Components progressively render as data arrives
  * 4. Client hydrates with prefetched data (no refetch)
- * 
+ *
  * Benefits:
  * - Faster Time to First Byte (TTFB)
  * - Better Core Web Vitals scores
  * - SEO-friendly server rendering
  * - Eliminates client-side waterfalls
  * - Type-safe data fetching with tRPC
- * 
+ *
  * Use cases:
  * - Pages with multiple data dependencies
  * - Lists that need server-side rendering
  * - Dashboard with multiple widgets
  * - Any page where SEO matters
- * 
+ *
  * Example usage:
  * <Await
  *   fallback={<LoadingSpinner />}
- *   prefetch={[trpc.post.all.queryOptions()]}
+ *   prefetch={[trpc.events.list.queryOptions()]}
  *   ErrorBoundaryComponent={ErrorBoundary}
  * >
- *   <PostList />
+ *   <EventList />
  * </Await>
  */
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -71,7 +71,7 @@ export function Await<T>({
   ) : (
     <>{children}</>
   );
-  
+
   // Server-side prefetching: This runs on the server and populates
   // the tRPC cache, which is then serialized and sent to the client
   prefetch.map((p) => {

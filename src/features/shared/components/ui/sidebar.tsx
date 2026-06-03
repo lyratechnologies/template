@@ -24,7 +24,7 @@ import {
   TooltipTrigger,
 } from "~/features/shared/components/ui/tooltip";
 import { useIsMobile } from "~/features/shared/hooks/use-mobile";
-import { cn } from "~/lib/utils";
+import { cn } from "~/features/shared/utils";
 
 const SIDEBAR_COOKIE_NAME = "sidebar_state";
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
@@ -607,10 +607,7 @@ function SidebarMenuSkeleton({
 }: React.ComponentProps<"div"> & {
   showIcon?: boolean;
 }) {
-  // Random width between 50 to 90%.
-  const width = React.useMemo(() => {
-    return `${Math.floor(Math.random() * 40) + 50}%`;
-  }, []);
+  const width = "75%";
 
   return (
     <div

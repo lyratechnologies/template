@@ -18,7 +18,7 @@
  * - Reusable feature components across different pages
  * - Centralized data fetching strategy per page
  */
-import Link from "next/link";
+import { headers } from "next/headers";
 
 import {
   GetPost,
@@ -30,13 +30,16 @@ import PostErrorBoundary from "~/features/post/components/PostErrorBoundary";
 import { Await } from "~/features/shared/components/Await";
 import { LoadingSpinner } from "~/features/shared/components/LoadingSpinner";
 import { auth } from "~/server/auth";
+import { signInWithDiscord, signOut } from "~/server/auth/actions";
 import { trpc } from "~/trpc/server";
 
 export async function HomePageContent() {
   // This is to simulate auth loading time
   // await new Promise((resolve) => setTimeout(resolve, 3000));
 
-  const session = await auth();
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
 
   if (!session) {
     return (
@@ -47,12 +50,14 @@ export async function HomePageContent() {
           </p>
         </div>
 
-        <Link
-          href={session ? "/api/auth/signout" : "/api/auth/signin"}
-          className="rounded-full bg-gradient-to-r from-[hsl(280,100%,70%)] to-[hsl(240,100%,70%)] px-8 py-3 font-semibold text-white no-underline transition-all duration-200 hover:scale-105 hover:shadow-lg"
-        >
-          {session ? "Sign out" : "Sign in"}
-        </Link>
+        <form action={signInWithDiscord}>
+          <button
+            type="submit"
+            className="rounded-full bg-gradient-to-r from-[hsl(280,100%,70%)] to-[hsl(240,100%,70%)] px-8 py-3 font-semibold text-white no-underline transition-all duration-200 hover:scale-105 hover:shadow-lg"
+          >
+            Sign in
+          </button>
+        </form>
       </div>
     );
   }
@@ -129,12 +134,14 @@ export async function HomePageContent() {
                   </p>
                 </div>
 
-                <Link
-                  href={session ? "/api/auth/signout" : "/api/auth/signin"}
-                  className="rounded-full bg-gradient-to-r from-[hsl(280,100%,70%)] to-[hsl(240,100%,70%)] px-8 py-3 font-semibold text-white no-underline transition-all duration-200 hover:scale-105 hover:shadow-lg"
-                >
-                  {session ? "Sign out" : "Sign in"}
-                </Link>
+                <form action={signOut}>
+                  <button
+                    type="submit"
+                    className="rounded-full bg-gradient-to-r from-[hsl(280,100%,70%)] to-[hsl(240,100%,70%)] px-8 py-3 font-semibold text-white no-underline transition-all duration-200 hover:scale-105 hover:shadow-lg"
+                  >
+                    Sign out
+                  </button>
+                </form>
               </div>
             </div>
           </div>

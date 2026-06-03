@@ -156,8 +156,9 @@ export function GetPost() {
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          const formData = new FormData(e.target as HTMLFormElement);
-          const id = formData.get("id") as string;
+          const formData = new FormData(e.currentTarget);
+          const idValue = formData.get("id");
+          const id = typeof idValue === "string" ? idValue : "";
           setId(id);
         }}
         className="space-y-3"

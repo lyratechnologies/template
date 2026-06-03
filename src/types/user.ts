@@ -5,7 +5,7 @@ export const UserSchema = z.object({
   name: z.string(),
   email: z.string().email(),
   image: z.string().url(),
-  emailVerified: z.date().optional(),
+  emailVerified: z.boolean(),
 });
 
 export type User = z.infer<typeof UserSchema>;

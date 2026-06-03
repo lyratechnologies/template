@@ -4,11 +4,10 @@ import type { UseMutationOptions } from "@tanstack/react-query";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 
-interface UseMutationWithToastOptions<TData, TError, TVariables>
-  extends Omit<
-    UseMutationOptions<TData, TError, TVariables>,
-    "onSuccess" | "onError"
-  > {
+interface UseMutationWithToastOptions<TData, TError, TVariables> extends Omit<
+  UseMutationOptions<TData, TError, TVariables>,
+  "onSuccess" | "onError"
+> {
   onSuccess?: (data: TData, variables: TVariables) => void;
   onError?: (error: TError, variables: TVariables) => void;
   successMessage?: string | ((data: TData, variables: TVariables) => string);
@@ -28,7 +27,7 @@ export function useMutationWithToast<TData, TError, TVariables>(
 
   return useMutation({
     ...mutationOptions,
-    onSuccess: (data, variables, context) => {
+    onSuccess: (data, variables, _context) => {
       // Show success toast
       const message =
         typeof successMessage === "function"
@@ -39,7 +38,7 @@ export function useMutationWithToast<TData, TError, TVariables>(
       // Call the original success callback
       onSuccess?.(data, variables);
     },
-    onError: (error, variables, context) => {
+    onError: (error, variables, _context) => {
       // Show error toast
       const message =
         typeof errorMessage === "function"

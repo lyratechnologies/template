@@ -1,8 +1,8 @@
-import { Prisma } from "@prisma/client";
+import type { Prisma } from "generated/prisma/client";
 
 import { type User } from "~/types/user";
 
-export const UserQuery = Prisma.validator<Prisma.UserDefaultArgs>()({});
+export const UserQuery = {} satisfies Prisma.UserDefaultArgs;
 
 export const PrismaUserToUser = (
   user: Prisma.UserGetPayload<typeof UserQuery>

@@ -1,24 +1,24 @@
 /**
  * Feature-based custom hook for post mutations
  * Demonstrates the frontend feature organization pattern
- * 
+ *
  * This hook encapsulates:
  * - All post-related mutations (create, update, delete)
  * - Cache invalidation logic
  * - Toast notifications
  * - Error handling
- * 
+ *
  * Benefits:
  * - Reusable across components
  * - Centralized mutation logic
  * - Consistent UX patterns
  * - Easy to test
- * 
+ *
  * Use cases:
  * - Creating posts in forms
  * - Updating posts in editors
  * - Deleting posts from lists
- * 
+ *
  * Example usage:
  * const { createMutation } = usePostMutations({
  *   create: {
@@ -28,7 +28,7 @@
  */
 "use client";
 
-import type { Post } from "@prisma/client";
+import type { Post } from "generated/prisma/client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 

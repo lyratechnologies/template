@@ -26,6 +26,7 @@ export const postRouter = createTRPCRouter({
           name: ctx.session.user.name ?? "",
           email: ctx.session.user.email ?? "",
           image: ctx.session.user.image ?? "",
+          emailVerified: ctx.session.user.emailVerified,
         },
       });
     }),

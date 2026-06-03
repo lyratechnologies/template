@@ -1,4 +1,14 @@
 export {
+  cancelRegistration,
+  CancelRegistrationInputSchema,
+  CancelRegistrationOutputSchema,
+  CancelRegistrationRejectionReasonSchema,
+  type CancelRegistrationInput,
+  type CancelRegistrationOutput,
+  type CancelRegistrationRejectionReason,
+  type CancelRegistrationRepositories,
+} from "./services/cancel-registration";
+export {
   createEvent,
   CreateEventInputSchema,
   CreateEventOutputSchema,
@@ -6,6 +16,16 @@ export {
   type CreateEventOutput,
   type CreateEventRepositories,
 } from "./services/create-event";
+export {
+  leaveWaitlist,
+  LeaveWaitlistInputSchema,
+  LeaveWaitlistOutputSchema,
+  LeaveWaitlistRejectionReasonSchema,
+  type LeaveWaitlistInput,
+  type LeaveWaitlistOutput,
+  type LeaveWaitlistRejectionReason,
+  type LeaveWaitlistRepositories,
+} from "./services/leave-waitlist";
 export {
   registerForEvent,
   RegisterForEventInputSchema,
@@ -30,9 +50,13 @@ export {
   type RegistrationWindow,
 } from "./domain/event";
 export {
+  AttendeeEventParticipationSchema,
+  getActiveWaitlistRank,
+  getNextWaitlistSequencePosition,
   RegistrationStatusSchema,
   RegistrationSummarySchema,
   WaitlistEntrySummarySchema,
+  type AttendeeEventParticipation,
   type RegistrationStatus,
   type RegistrationSummary,
   type WaitlistEntrySummary,

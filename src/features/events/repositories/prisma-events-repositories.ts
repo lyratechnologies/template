@@ -1,4 +1,5 @@
 import type {
+  AttendeeEventParticipation,
   EventRegistrationSnapshot,
   EventRepository,
   EventSummary,
@@ -7,6 +8,11 @@ import type {
   WaitlistEntrySummary,
 } from "~/features/events";
 import type { PrismaClient } from "generated/prisma/client";
+
+import {
+  getActiveWaitlistRank,
+  getNextWaitlistSequencePosition,
+} from "~/features/events";
 
 function toEventRegistrationSnapshot(event: {
   id: string;
@@ -28,19 +34,35 @@ function toEventRegistrationSnapshot(event: {
   };
 }
 
-function toEventSummary(event: {
-  id: string;
-  title: string;
-  description: string;
-  startsAt: Date;
-  capacity: number;
-  registrationOpensAt: Date;
-  registrationClosesAt: Date;
-  _count: {
-    registrations: number;
-    waitlistEntries: number;
-  };
-}): EventSummary {
+function toEventSummary(
+  event: {
+    id: string;
+    title: string;
+    description: string;
+    startsAt: Date;
+    capacity: number;
+    registrationOpensAt: Date;
+    registrationClosesAt: Date;
+    _count: {
+      registrations: number;
+      waitlistEntries: number;
+    };
+    registrations?: Array<{
+      id: string;
+      attendeeId: string;
+      eventId: string;
+    }>;
+    waitlistEntries?: Array<{
+      id: string;
+      attendeeId: string;
+      eventId: string;
+      position: number;
+    }>;
+  },
+  attendeeId?: string
+): EventSummary {
+  const attendeeParticipation = toAttendeeEventParticipation(event, attendeeId);
+
   return {
     id: event.id,
     title: event.title,
@@ -53,7 +75,55 @@ function toEventSummary(event: {
     },
     confirmedRegistrationCount: event._count.registrations,
     waitlistEntryCount: event._count.waitlistEntries,
+    ...(attendeeParticipation ? { attendeeParticipation } : {}),
   };
+}
+
+function toAttendeeEventParticipation(
+  event: {
+    registrations?: Array<{
+      id: string;
+      attendeeId: string;
+      eventId: string;
+    }>;
+    waitlistEntries?: Array<{
+      id: string;
+      attendeeId: string;
+      eventId: string;
+      position: number;
+    }>;
+  },
+  attendeeId?: string
+): AttendeeEventParticipation | null {
+  const registration = event.registrations?.[0];
+
+  if (registration) {
+    return {
+      status: "registered",
+      registration: toRegistrationSummary(registration),
+    };
+  }
+
+  const waitlistEntry = event.waitlistEntries?.find(
+    (activeWaitlistEntry) => activeWaitlistEntry.attendeeId === attendeeId
+  );
+
+  if (waitlistEntry) {
+    const activeRank = getActiveWaitlistRank(
+      waitlistEntry,
+      event.waitlistEntries ?? []
+    );
+
+    return {
+      status: "waitlisted",
+      waitlistEntry: toWaitlistEntrySummary(
+        waitlistEntry,
+        activeRank ?? waitlistEntry.position
+      ),
+    };
+  }
+
+  return null;
 }
 
 function toRegistrationSummary(registration: {
@@ -69,17 +139,20 @@ function toRegistrationSummary(registration: {
   };
 }
 
-function toWaitlistEntrySummary(waitlistEntry: {
-  id: string;
-  attendeeId: string;
-  eventId: string;
-  position: number;
-}): WaitlistEntrySummary {
+function toWaitlistEntrySummary(
+  waitlistEntry: {
+    id: string;
+    attendeeId: string;
+    eventId: string;
+    position: number;
+  },
+  position = waitlistEntry.position
+): WaitlistEntrySummary {
   return {
     id: waitlistEntry.id,
     attendeeId: waitlistEntry.attendeeId,
     eventId: waitlistEntry.eventId,
-    position: waitlistEntry.position,
+    position,
   };
 }
 
@@ -99,7 +172,7 @@ export function createPrismaEventRepository(db: PrismaClient): EventRepository {
           _count: {
             select: {
               registrations: {
-                where: { status: "CONFIRMED" },
+                where: { status: "CONFIRMED", cancelledAt: null },
               },
               waitlistEntries: {
                 where: {
@@ -121,7 +194,7 @@ export function createPrismaEventRepository(db: PrismaClient): EventRepository {
           _count: {
             select: {
               registrations: {
-                where: { status: "CONFIRMED" },
+                where: { status: "CONFIRMED", cancelledAt: null },
               },
             },
           },
@@ -130,14 +203,34 @@ export function createPrismaEventRepository(db: PrismaClient): EventRepository {
 
       return event ? toEventRegistrationSnapshot(event) : null;
     },
-    async listOpenEvents() {
+    async listOpenEvents(input) {
       const events = await db.event.findMany({
         orderBy: { startsAt: "asc" },
         include: {
+          registrations: input?.attendeeId
+            ? {
+                where: {
+                  attendeeId: input.attendeeId,
+                  status: "CONFIRMED",
+                  cancelledAt: null,
+                },
+                take: 1,
+              }
+            : false,
+          waitlistEntries: input?.attendeeId
+            ? {
+                where: {
+                  promotedAt: null,
+                  cancelledAt: null,
+                },
+                orderBy: { position: "asc" },
+                take: 1,
+              }
+            : false,
           _count: {
             select: {
               registrations: {
-                where: { status: "CONFIRMED" },
+                where: { status: "CONFIRMED", cancelledAt: null },
               },
               waitlistEntries: {
                 where: {
@@ -150,7 +243,7 @@ export function createPrismaEventRepository(db: PrismaClient): EventRepository {
         },
       });
 
-      return events.map(toEventSummary);
+      return events.map((event) => toEventSummary(event, input?.attendeeId));
     },
   };
 }
@@ -165,10 +258,38 @@ export function createPrismaRegistrationRepository(
           attendeeId: input.attendeeId,
           eventId: input.eventId,
           status: "CONFIRMED",
+          cancelledAt: null,
         },
       });
 
       return registration ? toRegistrationSummary(registration) : null;
+    },
+    async findActiveWaitlistEntry(input) {
+      const activeWaitlistEntries = await db.waitlistEntry.findMany({
+        where: {
+          eventId: input.eventId,
+          promotedAt: null,
+          cancelledAt: null,
+        },
+        orderBy: { position: "asc" },
+      });
+      const waitlistEntry = activeWaitlistEntries.find(
+        (activeWaitlistEntry) =>
+          activeWaitlistEntry.attendeeId === input.attendeeId
+      );
+
+      if (!waitlistEntry) {
+        return null;
+      }
+      const activeRank = getActiveWaitlistRank(
+        waitlistEntry,
+        activeWaitlistEntries
+      );
+
+      return toWaitlistEntrySummary(
+        waitlistEntry,
+        activeRank ?? waitlistEntry.position
+      );
     },
     async createConfirmedRegistration(input) {
       const registration = await db.registration.create({
@@ -190,16 +311,88 @@ export function createPrismaRegistrationRepository(
           position: true,
         },
       });
+      const activeWaitlistEntries = await db.waitlistEntry.findMany({
+        where: {
+          eventId: input.eventId,
+          promotedAt: null,
+          cancelledAt: null,
+        },
+        select: {
+          position: true,
+        },
+      });
 
       const waitlistEntry = await db.waitlistEntry.create({
         data: {
           attendeeId: input.attendeeId,
           eventId: input.eventId,
-          position: (latestWaitlistPosition._max.position ?? 0) + 1,
+          position: getNextWaitlistSequencePosition([
+            ...activeWaitlistEntries,
+            { position: latestWaitlistPosition._max.position ?? 0 },
+          ]),
+        },
+      });
+
+      return toWaitlistEntrySummary(
+        waitlistEntry,
+        activeWaitlistEntries.length + 1
+      );
+    },
+    async cancelRegistration(input) {
+      const registration = await db.registration.update({
+        where: { id: input.registrationId },
+        data: {
+          status: "CANCELLED",
+          cancelledAt: input.cancelledAt,
+        },
+      });
+
+      return toRegistrationSummary(registration);
+    },
+    async cancelWaitlistEntry(input) {
+      const waitlistEntry = await db.waitlistEntry.update({
+        where: { id: input.waitlistEntryId },
+        data: {
+          cancelledAt: input.cancelledAt,
         },
       });
 
       return toWaitlistEntrySummary(waitlistEntry);
+    },
+    async promoteNextWaitlistEntry(input) {
+      return db.$transaction(async (tx) => {
+        const waitlistEntry = await tx.waitlistEntry.findFirst({
+          where: {
+            eventId: input.eventId,
+            promotedAt: null,
+            cancelledAt: null,
+          },
+          orderBy: { position: "asc" },
+        });
+
+        if (waitlistEntry === null) {
+          return null;
+        }
+
+        const promotedWaitlistEntry = await tx.waitlistEntry.update({
+          where: { id: waitlistEntry.id },
+          data: {
+            promotedAt: input.promotedAt,
+          },
+        });
+        const registration = await tx.registration.create({
+          data: {
+            attendeeId: waitlistEntry.attendeeId,
+            eventId: waitlistEntry.eventId,
+            status: "CONFIRMED",
+          },
+        });
+
+        return {
+          registration: toRegistrationSummary(registration),
+          waitlistEntry: toWaitlistEntrySummary(promotedWaitlistEntry),
+        };
+      });
     },
   };
 }

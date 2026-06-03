@@ -18,12 +18,9 @@ src/
       api/
       ui/
       index.ts
-    notifications/
+      notifications/
       domain/
-      services/
-      repositories/
       api/
-      ui/
       index.ts
     shared/
       components/
@@ -53,12 +50,18 @@ Cross-slice imports must go through narrow public `index.ts` exports. Deep impor
 
 Split features when the language, lifecycle, owners, or infrastructure concerns diverge. Keep tightly coupled concepts together when they form one business workflow. In this demo, `events/` owns event publishing, registration, capacity, and waitlist workflows. **Event**, **Registration**, and **Waitlist Entry** belong to the event capability because registration and waitlist outcomes depend on event capacity and registration windows. **Notifications** is separate because message delivery is a different capability that can react to event-registration outcomes without owning those rules.
 
+Small side features do not need empty `services/` and `repositories/` folders when the split would be ceremony. The `notifications/` feature is intentionally thin: it owns notification domain types, a tRPC router, and a small in-memory inbox module. The useful demo notification is cross-account: when one attendee cancels a confirmed registration, the next waitlisted attendee can be promoted and notified. A production app can replace that in-memory module with an email provider, queue, outbox, or database-backed adapter without changing the events workflow.
+
 ## Domain Models
 
 Domain models are Zod-first when runtime validation or invariants matter. Prefer serializable domain data plus domain functions over mandatory entity classes. Introduce classes only when behavior is genuinely stateful enough that functional modules become awkward. Prisma-generated schemas may reduce repository boilerplate, but they do not define domain language.
 
 ```ts
-export const EventCapacitySchema = z.number().int().positive().brand<"EventCapacity">();
+export const EventCapacitySchema = z
+  .number()
+  .int()
+  .positive()
+  .brand<"EventCapacity">();
 export type EventCapacity = z.infer<typeof EventCapacitySchema>;
 ```
 
@@ -83,9 +86,21 @@ Expected business outcomes are returned as typed response states, not thrown as 
 
 ```ts
 export const RegisterForEventOutputSchema = z.discriminatedUnion("status", [
-  z.object({ status: z.literal("registered"), registration: RegistrationSummarySchema, events: z.array(EventRegistrationEventSchema) }),
-  z.object({ status: z.literal("waitlisted"), waitlistEntry: WaitlistEntrySummarySchema, events: z.array(EventRegistrationEventSchema) }),
-  z.object({ status: z.literal("rejected"), reason: RegisterForEventRejectionReasonSchema, events: z.array(EventRegistrationEventSchema) }),
+  z.object({
+    status: z.literal("registered"),
+    registration: RegistrationSummarySchema,
+    events: z.array(EventRegistrationEventSchema),
+  }),
+  z.object({
+    status: z.literal("waitlisted"),
+    waitlistEntry: WaitlistEntrySummarySchema,
+    events: z.array(EventRegistrationEventSchema),
+  }),
+  z.object({
+    status: z.literal("rejected"),
+    reason: RegisterForEventRejectionReasonSchema,
+    events: z.array(EventRegistrationEventSchema),
+  }),
 ]);
 ```
 
@@ -100,7 +115,9 @@ Reusable repository contracts live in `repositories/`. Service files define only
 Prisma repositories expose factories for service dependencies:
 
 ```ts
-export function createPrismaRegisterForEventRepositories(db: PrismaClient): RegisterForEventRepositories {
+export function createPrismaRegisterForEventRepositories(
+  db: PrismaClient
+): RegisterForEventRepositories {
   return {
     events: createPrismaEventRepository(db),
     registrations: createPrismaRegistrationRepository(db),
@@ -122,7 +139,7 @@ tRPC remains the primary API layer. Routers live inside feature slices and stay 
 
 Root API composition only mounts slice routers.
 
-Cross-feature reactions should use domain-event-shaped outputs rather than direct service-to-service calls. For this template, an events service can return events such as `RegistrationConfirmed`, and the API layer may dispatch them in-process to `notifications/` after the workflow succeeds. Notification delivery failure must not roll back a successful registration outcome. Production applications can replace that in-process dispatch with an outbox or message bus without changing the event-registration service contract.
+Cross-feature reactions should use domain-event-shaped outputs rather than direct service-to-service calls. For this template, an events service can return events such as `WaitlistPromoted`, and the API layer may dispatch them in-process to `notifications/` after the workflow succeeds. Notification delivery failure must not roll back a successful registration outcome. Production applications can replace that in-process dispatch with an outbox or message bus without changing the event-registration service contract.
 
 ## UI
 

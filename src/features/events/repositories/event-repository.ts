@@ -14,5 +14,5 @@ export type EventRepository = {
   findRegistrationSnapshot: (
     eventId: string
   ) => Promise<EventRegistrationSnapshot | null>;
-  listOpenEvents: () => Promise<EventSummary[]>;
+  listOpenEvents: (input?: { attendeeId?: string }) => Promise<EventSummary[]>;
 };

@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { AttendeeEventParticipationSchema } from "./registration";
+
 export const RegistrationWindowSchema = z.object({
   opensAt: z.date(),
   closesAt: z.date(),
@@ -21,6 +23,7 @@ export const EventSummarySchema = EventSchema.extend({
   startsAt: z.date(),
   confirmedRegistrationCount: z.number().int().nonnegative(),
   waitlistEntryCount: z.number().int().nonnegative(),
+  attendeeParticipation: AttendeeEventParticipationSchema.nullable().optional(),
 });
 
 export type EventSummary = z.infer<typeof EventSummarySchema>;
@@ -42,6 +45,25 @@ export const EventRegistrationEventSchema = z.discriminatedUnion("type", [
   }),
   z.object({
     type: z.literal("WaitlistJoined"),
+    waitlistEntryId: z.string().min(1),
+    attendeeId: z.string().min(1),
+    eventId: z.string().min(1),
+  }),
+  z.object({
+    type: z.literal("RegistrationCancelled"),
+    registrationId: z.string().min(1),
+    attendeeId: z.string().min(1),
+    eventId: z.string().min(1),
+  }),
+  z.object({
+    type: z.literal("WaitlistLeft"),
+    waitlistEntryId: z.string().min(1),
+    attendeeId: z.string().min(1),
+    eventId: z.string().min(1),
+  }),
+  z.object({
+    type: z.literal("WaitlistPromoted"),
+    registrationId: z.string().min(1),
     waitlistEntryId: z.string().min(1),
     attendeeId: z.string().min(1),
     eventId: z.string().min(1),

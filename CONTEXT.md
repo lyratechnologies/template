@@ -29,7 +29,7 @@ The time range during which attendees may register for an event.
 _Avoid_: Signup period, enrollment window
 
 **Notification**:
-A message prepared for delivery to an attendee after a meaningful event-registration outcome.
+A message prepared for delivery to an attendee after a meaningful event-registration outcome, especially when another attendee's action changes their registration state.
 _Avoid_: Email, alert, message
 
 ## Relationships
@@ -41,7 +41,7 @@ _Avoid_: Email, alert, message
 - A **Waitlist Entry** may become a confirmed **Registration** when capacity becomes available
 - A cancelled **Registration** no longer counts against **Capacity**
 - A **Notification** is addressed to one **Attendee**
-- A **Notification** is about one event-registration outcome, such as a confirmed **Registration** or **Waitlist Entry**
+- A **Notification** is about one event-registration outcome, such as a **Waitlist Entry** becoming a confirmed **Registration**
 
 ## Example dialogue
 

@@ -27,10 +27,10 @@ export function EventsView({ isSignedIn }: EventsViewProps) {
       onError: () => {
         toast.error("Event could not be created");
       },
-    }),
+    })
   );
   const registerMutation = useMutation(
-    trpc.registrations.registerForEvent.mutationOptions({
+    trpc.events.registerForEvent.mutationOptions({
       onSuccess: async (result) => {
         await queryClient.invalidateQueries({
           queryKey: trpc.events.list.queryKey(),
@@ -43,7 +43,7 @@ export function EventsView({ isSignedIn }: EventsViewProps) {
 
         if (result.status === "waitlisted") {
           toast.info(
-            `Added to waitlist at position ${result.waitlistEntry.position}`,
+            `Added to waitlist at position ${result.waitlistEntry.position}`
           );
           return;
         }
@@ -51,13 +51,13 @@ export function EventsView({ isSignedIn }: EventsViewProps) {
         toast.warning(
           result.reason === "already_registered"
             ? "You already have an active registration for this event"
-            : "Registration is closed for this event",
+            : "Registration is closed for this event"
         );
       },
       onError: () => {
         toast.error("Registration failed");
       },
-    }),
+    })
   );
 
   function handleCreateEvent(event: FormEvent<HTMLFormElement>) {
@@ -72,7 +72,12 @@ export function EventsView({ isSignedIn }: EventsViewProps) {
     const startsAt = new Date(startsAtValue);
     const registrationOpensAt = new Date();
 
-    if (!title || !description || Number.isNaN(startsAt.getTime()) || capacity < 1) {
+    if (
+      !title ||
+      !description ||
+      Number.isNaN(startsAt.getTime()) ||
+      capacity < 1
+    ) {
       toast.warning("Enter a title, description, start time, and capacity");
       return;
     }
@@ -90,7 +95,7 @@ export function EventsView({ isSignedIn }: EventsViewProps) {
         onSuccess: () => {
           formElement.reset();
         },
-      },
+      }
     );
   }
 
@@ -128,10 +133,7 @@ export function EventsView({ isSignedIn }: EventsViewProps) {
         {eventsQuery.isLoading ? (
           <StatusPanel label="Loading events" />
         ) : eventsQuery.isError ? (
-          <StatusPanel
-            label="Events could not be loaded."
-            tone="error"
-          />
+          <StatusPanel label="Events could not be loaded." tone="error" />
         ) : events.length === 0 ? (
           <StatusPanel
             label={
@@ -149,12 +151,12 @@ export function EventsView({ isSignedIn }: EventsViewProps) {
               }).format(event.startsAt);
               const capacityRemaining = Math.max(
                 event.capacity - event.confirmedRegistrationCount,
-                0,
+                0
               );
               const isFull = capacityRemaining === 0;
               const capacityUsedPercent = Math.min(
                 (event.confirmedRegistrationCount / event.capacity) * 100,
-                100,
+                100
               );
 
               return (
@@ -262,7 +264,7 @@ function CreateEventForm({
   onSubmit: (event: FormEvent<HTMLFormElement>) => void;
 }) {
   const [defaultStartsAt] = useState(() =>
-    toDateTimeLocalValue(new Date(Date.now() + 24 * 60 * 60 * 1000)),
+    toDateTimeLocalValue(new Date(Date.now() + 24 * 60 * 60 * 1000))
   );
 
   return (
@@ -284,7 +286,7 @@ function CreateEventForm({
         <label className="grid gap-1 text-sm font-medium">
           Title
           <input
-            className="h-11 min-w-0 rounded-md border border-[oklch(0.78_0.018_95)] bg-[oklch(0.99_0.004_95)] px-3 font-normal outline-none transition-colors focus:border-[oklch(0.43_0.075_165)]"
+            className="h-11 min-w-0 rounded-md border border-[oklch(0.78_0.018_95)] bg-[oklch(0.99_0.004_95)] px-3 font-normal transition-colors outline-none focus:border-[oklch(0.43_0.075_165)]"
             name="title"
             placeholder="Community workshop"
             required
@@ -293,7 +295,7 @@ function CreateEventForm({
         <label className="grid gap-1 text-sm font-medium">
           Starts
           <input
-            className="h-11 min-w-0 rounded-md border border-[oklch(0.78_0.018_95)] bg-[oklch(0.99_0.004_95)] px-3 font-normal outline-none transition-colors focus:border-[oklch(0.43_0.075_165)]"
+            className="h-11 min-w-0 rounded-md border border-[oklch(0.78_0.018_95)] bg-[oklch(0.99_0.004_95)] px-3 font-normal transition-colors outline-none focus:border-[oklch(0.43_0.075_165)]"
             defaultValue={defaultStartsAt}
             name="startsAt"
             required
@@ -303,7 +305,7 @@ function CreateEventForm({
         <label className="grid gap-1 text-sm font-medium">
           Capacity
           <input
-            className="h-11 min-w-0 rounded-md border border-[oklch(0.78_0.018_95)] bg-[oklch(0.99_0.004_95)] px-3 font-normal outline-none transition-colors focus:border-[oklch(0.43_0.075_165)]"
+            className="h-11 min-w-0 rounded-md border border-[oklch(0.78_0.018_95)] bg-[oklch(0.99_0.004_95)] px-3 font-normal transition-colors outline-none focus:border-[oklch(0.43_0.075_165)]"
             defaultValue={20}
             min={1}
             name="capacity"
@@ -316,7 +318,7 @@ function CreateEventForm({
       <label className="grid gap-1 text-sm font-medium">
         Description
         <textarea
-          className="min-h-28 min-w-0 resize-y rounded-md border border-[oklch(0.78_0.018_95)] bg-[oklch(0.99_0.004_95)] px-3 py-2 font-normal leading-6 outline-none transition-colors focus:border-[oklch(0.43_0.075_165)]"
+          className="min-h-28 min-w-0 resize-y rounded-md border border-[oklch(0.78_0.018_95)] bg-[oklch(0.99_0.004_95)] px-3 py-2 leading-6 font-normal transition-colors outline-none focus:border-[oklch(0.43_0.075_165)]"
           name="description"
           placeholder="What attendees should expect"
           required
@@ -338,7 +340,9 @@ function CreateEventForm({
 }
 
 function toDateTimeLocalValue(date: Date) {
-  const offsetDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+  const offsetDate = new Date(
+    date.getTime() - date.getTimezoneOffset() * 60000
+  );
   return offsetDate.toISOString().slice(0, 16);
 }
 

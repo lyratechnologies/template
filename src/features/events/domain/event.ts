@@ -25,9 +25,36 @@ export const EventSummarySchema = EventSchema.extend({
 
 export type EventSummary = z.infer<typeof EventSummarySchema>;
 
+export const EventRegistrationSnapshotSchema = EventSchema.extend({
+  confirmedRegistrationCount: z.number().int().nonnegative(),
+});
+
+export type EventRegistrationSnapshot = z.infer<
+  typeof EventRegistrationSnapshotSchema
+>;
+
+export const EventRegistrationEventSchema = z.discriminatedUnion("type", [
+  z.object({
+    type: z.literal("RegistrationConfirmed"),
+    registrationId: z.string().min(1),
+    attendeeId: z.string().min(1),
+    eventId: z.string().min(1),
+  }),
+  z.object({
+    type: z.literal("WaitlistJoined"),
+    waitlistEntryId: z.string().min(1),
+    attendeeId: z.string().min(1),
+    eventId: z.string().min(1),
+  }),
+]);
+
+export type EventRegistrationEvent = z.infer<
+  typeof EventRegistrationEventSchema
+>;
+
 export function isRegistrationOpen(
   registrationWindow: RegistrationWindow,
-  at: Date,
+  at: Date
 ) {
   return (
     registrationWindow.opensAt.getTime() <= at.getTime() &&

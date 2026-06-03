@@ -1,3 +1,4 @@
+import type { EventRepository } from "../repositories/event-repository";
 import { z } from "zod";
 
 import { EventSummarySchema } from "../domain/event";
@@ -17,19 +18,23 @@ export const CreateEventOutputSchema = EventSummarySchema;
 
 export type CreateEventOutput = z.infer<typeof CreateEventOutputSchema>;
 
-export type CreateEventPorts = {
-  createEvent: (input: CreateEventInput) => Promise<CreateEventOutput>;
+export type CreateEventRepositories = {
+  events: Pick<EventRepository, "createEvent">;
 };
 
 export async function createEvent(
   rawInput: CreateEventInput,
-  ports: CreateEventPorts,
+  repositories: CreateEventRepositories
 ): Promise<CreateEventOutput> {
   const input = CreateEventInputSchema.parse(rawInput);
 
-  if (input.registrationClosesAt.getTime() <= input.registrationOpensAt.getTime()) {
+  if (
+    input.registrationClosesAt.getTime() <= input.registrationOpensAt.getTime()
+  ) {
     throw new Error("Registration window must close after it opens");
   }
 
-  return CreateEventOutputSchema.parse(await ports.createEvent(input));
+  return CreateEventOutputSchema.parse(
+    await repositories.events.createEvent(input)
+  );
 }

@@ -72,4 +72,4 @@ The `generated/*` TypeScript alias is configured in [tsconfig.json](tsconfig.jso
 
 Better Auth infrastructure lives under [src/server/auth](src/server/auth). The API route is mounted at [src/app/api/auth/[...all]/route.ts](src/app/api/auth/%5B...all%5D/route.ts).
 
-Domain and application code should receive actor or domain identity types, not Better Auth session objects.
+Domain and service code should receive actor or domain identity types, not Better Auth session objects.

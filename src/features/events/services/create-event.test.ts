@@ -17,20 +17,22 @@ describe("createEvent", () => {
         registrationClosesAt: startsAt,
       },
       {
-        createEvent: async (input) => ({
-          id: "event_1",
-          title: input.title,
-          description: input.description,
-          startsAt: input.startsAt,
-          capacity: input.capacity,
-          registrationWindow: {
-            opensAt: input.registrationOpensAt,
-            closesAt: input.registrationClosesAt,
-          },
-          confirmedRegistrationCount: 0,
-          waitlistEntryCount: 0,
-        }),
-      },
+        events: {
+          createEvent: async (input) => ({
+            id: "event_1",
+            title: input.title,
+            description: input.description,
+            startsAt: input.startsAt,
+            capacity: input.capacity,
+            registrationWindow: {
+              opensAt: input.registrationOpensAt,
+              closesAt: input.registrationClosesAt,
+            },
+            confirmedRegistrationCount: 0,
+            waitlistEntryCount: 0,
+          }),
+        },
+      }
     );
 
     expect(result).toEqual({

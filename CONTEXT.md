@@ -28,6 +28,10 @@ _Avoid_: Limit, seats
 The time range during which attendees may register for an event.
 _Avoid_: Signup period, enrollment window
 
+**Notification**:
+A message prepared for delivery to an attendee after a meaningful event-registration outcome.
+_Avoid_: Email, alert, message
+
 ## Relationships
 
 - An **Event** has one **Capacity** and one **Registration Window**
@@ -36,6 +40,8 @@ _Avoid_: Signup period, enrollment window
 - An **Event** has zero or more **Waitlist Entries**
 - A **Waitlist Entry** may become a confirmed **Registration** when capacity becomes available
 - A cancelled **Registration** no longer counts against **Capacity**
+- A **Notification** is addressed to one **Attendee**
+- A **Notification** is about one event-registration outcome, such as a confirmed **Registration** or **Waitlist Entry**
 
 ## Example dialogue
 
@@ -46,3 +52,4 @@ _Avoid_: Signup period, enrollment window
 
 - "user" refers to authentication identity in infrastructure. In the event-registration domain, use **Attendee**.
 - "waitlist" is part of the **Registration** workflow in this template, not a separate bounded context.
+- "email" is a delivery mechanism for a **Notification**, not the domain term.

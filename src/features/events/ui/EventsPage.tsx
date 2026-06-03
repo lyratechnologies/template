@@ -1,5 +1,5 @@
-import { headers } from "next/headers";
 import { LogOut } from "lucide-react";
+import { headers } from "next/headers";
 
 import { Await } from "~/features/shared/components/Await";
 import { LoadingSpinner } from "~/features/shared/components/LoadingSpinner";

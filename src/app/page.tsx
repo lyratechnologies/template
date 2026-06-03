@@ -1,4 +1,4 @@
-import { EventsPage } from "~/features/events/adapters/ui/EventsPage";
+import { EventsPage } from "~/features/events/ui/EventsPage";
 
 export default function Home() {
   return <EventsPage />;

@@ -1,6 +1,6 @@
 # Architecture
 
-This template uses full-stack vertical slices with clean architecture boundaries. A feature owns its domain language, application use cases, API adapter, persistence adapter, and UI.
+This template uses full-stack vertical slices with clean architecture boundaries. A feature owns a cohesive business capability: its domain language, service-layer workflows, repositories, API, and UI. Features are not split by every noun in the domain.
 
 ## Target Structure
 
@@ -13,28 +13,26 @@ src/
   features/
     events/
       domain/
-      application/
-      adapters/
-        api/
-        persistence/
-        ui/
+      services/
+      repositories/
+      api/
+      ui/
       index.ts
-    registrations/
+    notifications/
       domain/
-      application/
-      adapters/
-        api/
-        persistence/
-        ui/
+      services/
+      repositories/
+      api/
+      ui/
       index.ts
+    shared/
+      components/
+      hooks/
+      utils.ts
   server/
     api/
     auth/
     db.ts
-  shared/
-    application/
-    ui/
-    utils/
 generated/
   prisma/
   zod/
@@ -43,91 +41,95 @@ generated/
 ## Dependency Rules
 
 - `domain/` owns business concepts, invariants, value objects, and Zod-first domain schemas.
-- `application/` owns use cases, use-case input/output schemas, typed outcomes, and per-use-case ports.
-- `adapters/api/` owns tRPC routers and transport translation.
-- `adapters/persistence/` owns Prisma access, generated schema usage, and persistence-to-domain mapping.
-- `adapters/ui/` owns feature containers, presentational components, and feature hooks.
+- `services/` owns application services: use-case workflows, input/output schemas, typed outcomes, and dependencies expressed as repository contracts.
+- `repositories/` owns persistence contracts, Prisma implementations, generated schema usage, and persistence-to-domain mapping.
+- `api/` owns tRPC routers and transport translation.
+- `ui/` owns feature containers, presentational components, and feature hooks.
 - `src/app` is routing composition only. Route files import feature page containers.
-- `src/shared` is for generic UI, utilities, and framework-free primitives only.
-- `generated/*` is adapter support. Domain and application code must not import generated Prisma or Zod modules.
+- `src/features/shared` is for generic UI, utilities, and framework-free primitives only.
+- `generated/*` is repository support. Domain and service code must not import generated Prisma or Zod modules.
 
-Cross-slice imports must go through narrow public `index.ts` exports. Deep imports into another slice's `domain`, `application`, or `adapters` directories are forbidden.
+Cross-slice imports must go through narrow public `index.ts` exports. Deep imports into another slice's `domain`, `services`, `repositories`, `api`, or `ui` directories are forbidden.
+
+Split features when the language, lifecycle, owners, or infrastructure concerns diverge. Keep tightly coupled concepts together when they form one business workflow. In this demo, `events/` owns event publishing, registration, capacity, and waitlist workflows. **Event**, **Registration**, and **Waitlist Entry** belong to the event capability because registration and waitlist outcomes depend on event capacity and registration windows. **Notifications** is separate because message delivery is a different capability that can react to event-registration outcomes without owning those rules.
 
 ## Domain Models
 
-Domain models are Zod-first when runtime validation or invariants matter. Prisma-generated schemas may reduce adapter boilerplate, but they do not define domain language.
+Domain models are Zod-first when runtime validation or invariants matter. Prefer serializable domain data plus domain functions over mandatory entity classes. Introduce classes only when behavior is genuinely stateful enough that functional modules become awkward. Prisma-generated schemas may reduce repository boilerplate, but they do not define domain language.
 
 ```ts
 export const EventCapacitySchema = z.number().int().positive().brand<"EventCapacity">();
 export type EventCapacity = z.infer<typeof EventCapacitySchema>;
 ```
 
-Use generated Prisma/Zod schemas in persistence adapters and API-adjacent DTO composition when the shape is intentionally persistence-like.
+Use generated Prisma/Zod schemas in repositories and API-adjacent DTO composition when the shape is intentionally persistence-like.
 
-## Use Cases
+## Services
 
-Use cases are plain functions with explicit ports.
+Application services are plain functions with explicit repository dependencies. They are added when an operation has real workflow orchestration, not for every endpoint by default.
+
+Command-style workflows usually go through services. Boring read endpoints may call repositories directly from `api/` as long as the router stays thin and avoids business decisions. Business reads that combine policy, attendee-specific state, or multiple repositories should use a service.
 
 ```ts
 export async function registerForEvent(
   input: RegisterForEventInput,
-  ports: RegisterForEventPorts
+  repositories: RegisterForEventRepositories
 ): Promise<RegisterForEventOutput> {}
 ```
 
-Each use case owns its specific input schema, output schema, result type, and port type. Shared business concepts stay in `domain/`.
+Each service owns its specific input schema, output schema, result type, and repository dependency type. Shared business concepts stay in `domain/`.
 
 Expected business outcomes are returned as typed response states, not thrown as tRPC errors.
 
 ```ts
 export const RegisterForEventOutputSchema = z.discriminatedUnion("status", [
-  z.object({ status: z.literal("registered"), registration: RegistrationSummarySchema }),
-  z.object({ status: z.literal("waitlisted"), waitlistEntry: WaitlistEntrySummarySchema }),
-  z.object({ status: z.literal("rejected"), reason: RegisterForEventRejectionReasonSchema }),
+  z.object({ status: z.literal("registered"), registration: RegistrationSummarySchema, events: z.array(EventRegistrationEventSchema) }),
+  z.object({ status: z.literal("waitlisted"), waitlistEntry: WaitlistEntrySummarySchema, events: z.array(EventRegistrationEventSchema) }),
+  z.object({ status: z.literal("rejected"), reason: RegisterForEventRejectionReasonSchema, events: z.array(EventRegistrationEventSchema) }),
 ]);
 ```
 
 Throw only for system failures, authorization failures, permission failures, or unexpected states.
 
-## Ports And Transactions
+## Repositories And Transactions
 
-Ports are defined per use case by default. This keeps each workflow's dependency surface explicit and prevents broad repositories from accumulating unrelated methods.
+Repositories are named after feature concepts, such as `EventRepository` and `RegistrationRepository`, but their methods should be shaped by workflows rather than generic CRUD. Services depend on the narrow subset of repository methods they need, for example through `Pick<EventRepository, "findRegistrationSnapshot">`, so the repository name stays familiar without turning each service into a broad persistence client.
 
-Persistence adapters expose per-use-case port factories:
+Reusable repository contracts live in `repositories/`. Service files define only the narrowed dependency composition they consume.
+
+Prisma repositories expose factories for service dependencies:
 
 ```ts
-export function createPrismaRegisterForEventPorts(db: PrismaClient): RegisterForEventPorts {
+export function createPrismaRegisterForEventRepositories(db: PrismaClient): RegisterForEventRepositories {
   return {
-    findEventById,
-    findActiveRegistration,
-    countConfirmedRegistrations,
-    createConfirmedRegistration,
-    createWaitlistEntry,
-    runInTransaction,
+    events: createPrismaEventRepository(db),
+    registrations: createPrismaRegistrationRepository(db),
   };
 }
 ```
 
-Use cases own transaction boundaries through a transaction port. Prisma transaction clients stay inside persistence adapters.
+Services own transaction boundaries through repository dependencies. Prisma transaction clients stay inside repositories.
 
 ## API
 
-tRPC remains the primary API adapter. Routers live inside feature slices and stay thin:
+tRPC remains the primary API layer. Routers live inside feature slices and stay thin:
 
 - parse input with use-case schemas,
 - derive the actor from auth/session context,
-- construct the use-case ports,
-- call the use case,
+- construct repository dependencies,
+- call the service,
 - return typed output states.
 
 Root API composition only mounts slice routers.
+
+Cross-feature reactions should use domain-event-shaped outputs rather than direct service-to-service calls. For this template, an events service can return events such as `RegistrationConfirmed`, and the API layer may dispatch them in-process to `notifications/` after the workflow succeeds. Notification delivery failure must not roll back a successful registration outcome. Production applications can replace that in-process dispatch with an outbox or message bus without changing the event-registration service contract.
 
 ## UI
 
 Feature UI lives with the slice:
 
 ```txt
-src/features/events/adapters/ui/
+src/features/events/ui/
   EventsPage.tsx
   EventsView.tsx
   EventCard.tsx
@@ -139,11 +141,11 @@ Use role-based suffixes at page boundaries:
 - `EventsView.tsx` for presentational screen layout,
 - domain-specific names for child components.
 
-Shared shadcn-style primitives live in `src/shared/ui`.
+Shared shadcn-style primitives live in `src/features/shared/components/ui`.
 
 ## Auth
 
-Better Auth is infrastructure and lives under `src/server/auth`. Domain and application code receive an `Actor` or explicit domain identity, not Better Auth session objects.
+Better Auth is infrastructure and lives under `src/server/auth`. Domain and service code receive an `Actor` or explicit domain identity, not Better Auth session objects.
 
 In this demo domain, use **Attendee** for the business concept and reserve "user" for auth infrastructure.
 
@@ -169,12 +171,12 @@ Generated files are committed so the template is inspectable after checkout. Reg
 
 ## Testing
 
-Use Vitest for domain and application tests. These tests should run without Next.js, tRPC, Better Auth, Prisma, or a database.
+Use Vitest for domain and service tests. These tests should run without Next.js, tRPC, Better Auth, Prisma, or a database.
 
 ```txt
 src/features/events/domain/event.test.ts
-src/features/registrations/application/register-for-event.test.ts
-src/features/registrations/application/cancel-registration.test.ts
+src/features/events/services/register-for-event.test.ts
+src/features/events/services/cancel-registration.test.ts
 ```
 
 The architecture should make use-case tests fast and dependency-light.

@@ -1,4 +1,4 @@
-import type { EventRegistrationEvent } from "..";
+import type { EventRegistrationEvent } from "../domain/event";
 
 import { queueWaitlistPromotionNotification } from "~/features/notifications";
 import {
@@ -8,19 +8,22 @@ import {
 } from "~/server/api/trpc";
 
 import {
-  cancelRegistration,
-  CancelRegistrationInputSchema,
-  createEvent,
-  CreateEventInputSchema,
-  leaveWaitlist,
-  LeaveWaitlistInputSchema,
-  registerForEvent,
-  RegisterForEventInputSchema,
-} from "..";
-import {
   createPrismaEventRepository,
   createPrismaRegistrationRepository,
 } from "../repositories/prisma-events-repositories";
+import {
+  cancelRegistration,
+  CancelRegistrationInputSchema,
+} from "../services/cancel-registration";
+import { createEvent, CreateEventInputSchema } from "../services/create-event";
+import {
+  leaveWaitlist,
+  LeaveWaitlistInputSchema,
+} from "../services/leave-waitlist";
+import {
+  registerForEvent,
+  RegisterForEventInputSchema,
+} from "../services/register-for-event";
 
 export const eventsRouter = createTRPCRouter({
   create: protectedProcedure

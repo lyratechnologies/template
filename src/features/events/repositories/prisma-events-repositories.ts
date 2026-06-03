@@ -1,18 +1,20 @@
 import type {
-  AttendeeEventParticipation,
   EventRegistrationSnapshot,
-  EventRepository,
   EventSummary,
-  RegistrationRepository,
+} from "../domain/event";
+import type {
+  AttendeeEventParticipation,
   RegistrationSummary,
   WaitlistEntrySummary,
-} from "~/features/events";
+} from "../domain/registration";
+import type { EventRepository } from "./event-repository";
+import type { RegistrationRepository } from "./registration-repository";
 import type { PrismaClient } from "generated/prisma/client";
 
 import {
   getActiveWaitlistRank,
   getNextWaitlistSequencePosition,
-} from "~/features/events";
+} from "../domain/registration";
 
 function toEventRegistrationSnapshot(event: {
   id: string;
@@ -224,7 +226,6 @@ export function createPrismaEventRepository(db: PrismaClient): EventRepository {
                   cancelledAt: null,
                 },
                 orderBy: { position: "asc" },
-                take: 1,
               }
             : false,
           _count: {

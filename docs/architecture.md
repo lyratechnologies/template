@@ -149,7 +149,10 @@ Feature UI lives with the slice:
 src/features/events/ui/
   EventsPage.tsx
   EventsView.tsx
-  EventCard.tsx
+  components/
+    EventCard.tsx
+  hooks/
+    use-events-actions.ts
 ```
 
 Use role-based suffixes at page boundaries:

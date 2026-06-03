@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { leaveWaitlist } from "./leave-waitlist";
+import { leaveWaitlist } from "../leave-waitlist";
 
 describe("leaveWaitlist", () => {
   it('returns "left_waitlist" when the attendee has an active waitlist entry', async () => {

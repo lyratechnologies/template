@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { createEvent } from "./create-event";
+import { createEvent } from "../create-event";
 
 describe("createEvent", () => {
   it("creates an event with registration open before the event starts", async () => {

@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   getActiveWaitlistRank,
   getNextWaitlistSequencePosition,
-} from "./registration";
+} from "../registration";
 
 describe("getNextWaitlistSequencePosition", () => {
   it("calculates the next stored position from all existing waitlist entries", () => {

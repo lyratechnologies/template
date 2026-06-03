@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { registerForEvent } from "./register-for-event";
+import { registerForEvent } from "../register-for-event";
 
 describe("registerForEvent", () => {
   it('returns "registered" when the event is open, has capacity, and the attendee has no active registration', async () => {

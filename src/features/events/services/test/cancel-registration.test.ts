@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { cancelRegistration } from "./cancel-registration";
+import { cancelRegistration } from "../cancel-registration";
 
 describe("cancelRegistration", () => {
   it('returns "cancelled" when the attendee has an active registration', async () => {

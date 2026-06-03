@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   listQueuedNotifications,
   queueWaitlistPromotionNotification,
-} from "./notification";
+} from "../notification";
 
 describe("queued notifications", () => {
   it("queues and lists waitlist promotion notifications for an attendee", async () => {

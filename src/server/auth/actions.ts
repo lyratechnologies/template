@@ -5,10 +5,10 @@ import { redirect } from "next/navigation";
 
 import { auth } from "~/server/auth";
 
-export async function signInWithDiscord() {
+export async function signInWithGoogle() {
   const response = await auth.api.signInSocial({
     body: {
-      provider: "discord",
+      provider: "google",
       callbackURL: "/",
     },
   });

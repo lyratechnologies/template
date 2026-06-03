@@ -15,9 +15,9 @@ export const auth = betterAuth({
     provider: "sqlite",
   }),
   socialProviders: {
-    discord: {
-      clientId: env.AUTH_DISCORD_ID,
-      clientSecret: env.AUTH_DISCORD_SECRET,
+    google: {
+      clientId: env.AUTH_GOOGLE_ID,
+      clientSecret: env.AUTH_GOOGLE_SECRET,
     },
   },
   plugins: [nextCookies()],

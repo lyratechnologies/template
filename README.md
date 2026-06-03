@@ -36,8 +36,8 @@ Create a local `.env` file with:
 ```bash
 DATABASE_URL="file:./dev.db"
 BETTER_AUTH_SECRET="replace-me"
-AUTH_DISCORD_ID="replace-me"
-AUTH_DISCORD_SECRET="replace-me"
+AUTH_GOOGLE_ID="replace-me"
+AUTH_GOOGLE_SECRET="replace-me"
 BETTER_AUTH_URL="http://localhost:3000"
 ```
 

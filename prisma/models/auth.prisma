@@ -41,7 +41,8 @@ model User {
   updatedAt     DateTime  @updatedAt
   accounts      Account[]
   sessions      Session[]
-  posts         Post[]
+  registrations Registration[]
+  waitlistEntries WaitlistEntry[]
 }
 
 model Verification {

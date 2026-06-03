@@ -10,7 +10,8 @@ export const UserFindManyResultSchema = z.object({
   updatedAt: z.date(),
   accounts: z.array(z.unknown()),
   sessions: z.array(z.unknown()),
-  posts: z.array(z.unknown())
+  registrations: z.array(z.unknown()),
+  waitlistEntries: z.array(z.unknown())
 })),
   pagination: z.object({
   page: z.number().int().min(1),

@@ -12,5 +12,5 @@ generator zod {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
 }

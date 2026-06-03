@@ -388,7 +388,9 @@ export const ModelName = {
   Session: 'Session',
   User: 'User',
   Verification: 'Verification',
-  Post: 'Post'
+  Event: 'Event',
+  Registration: 'Registration',
+  WaitlistEntry: 'WaitlistEntry'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -404,7 +406,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "account" | "session" | "user" | "verification" | "post"
+    modelProps: "account" | "session" | "user" | "verification" | "event" | "registration" | "waitlistEntry"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -704,77 +706,225 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
-    Post: {
-      payload: Prisma.$PostPayload<ExtArgs>
-      fields: Prisma.PostFieldRefs
+    Event: {
+      payload: Prisma.$EventPayload<ExtArgs>
+      fields: Prisma.EventFieldRefs
       operations: {
         findUnique: {
-          args: Prisma.PostFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostPayload> | null
+          args: Prisma.EventFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventPayload> | null
         }
         findUniqueOrThrow: {
-          args: Prisma.PostFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostPayload>
+          args: Prisma.EventFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventPayload>
         }
         findFirst: {
-          args: Prisma.PostFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostPayload> | null
+          args: Prisma.EventFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventPayload> | null
         }
         findFirstOrThrow: {
-          args: Prisma.PostFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostPayload>
+          args: Prisma.EventFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventPayload>
         }
         findMany: {
-          args: Prisma.PostFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostPayload>[]
+          args: Prisma.EventFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventPayload>[]
         }
         create: {
-          args: Prisma.PostCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostPayload>
+          args: Prisma.EventCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventPayload>
         }
         createMany: {
-          args: Prisma.PostCreateManyArgs<ExtArgs>
+          args: Prisma.EventCreateManyArgs<ExtArgs>
           result: BatchPayload
         }
         createManyAndReturn: {
-          args: Prisma.PostCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostPayload>[]
+          args: Prisma.EventCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventPayload>[]
         }
         delete: {
-          args: Prisma.PostDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostPayload>
+          args: Prisma.EventDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventPayload>
         }
         update: {
-          args: Prisma.PostUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostPayload>
+          args: Prisma.EventUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventPayload>
         }
         deleteMany: {
-          args: Prisma.PostDeleteManyArgs<ExtArgs>
+          args: Prisma.EventDeleteManyArgs<ExtArgs>
           result: BatchPayload
         }
         updateMany: {
-          args: Prisma.PostUpdateManyArgs<ExtArgs>
+          args: Prisma.EventUpdateManyArgs<ExtArgs>
           result: BatchPayload
         }
         updateManyAndReturn: {
-          args: Prisma.PostUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostPayload>[]
+          args: Prisma.EventUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventPayload>[]
         }
         upsert: {
-          args: Prisma.PostUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostPayload>
+          args: Prisma.EventUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventPayload>
         }
         aggregate: {
-          args: Prisma.PostAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregatePost>
+          args: Prisma.EventAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateEvent>
         }
         groupBy: {
-          args: Prisma.PostGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.PostGroupByOutputType>[]
+          args: Prisma.EventGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EventGroupByOutputType>[]
         }
         count: {
-          args: Prisma.PostCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.PostCountAggregateOutputType> | number
+          args: Prisma.EventCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EventCountAggregateOutputType> | number
+        }
+      }
+    }
+    Registration: {
+      payload: Prisma.$RegistrationPayload<ExtArgs>
+      fields: Prisma.RegistrationFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.RegistrationFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RegistrationPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.RegistrationFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RegistrationPayload>
+        }
+        findFirst: {
+          args: Prisma.RegistrationFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RegistrationPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.RegistrationFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RegistrationPayload>
+        }
+        findMany: {
+          args: Prisma.RegistrationFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RegistrationPayload>[]
+        }
+        create: {
+          args: Prisma.RegistrationCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RegistrationPayload>
+        }
+        createMany: {
+          args: Prisma.RegistrationCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.RegistrationCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RegistrationPayload>[]
+        }
+        delete: {
+          args: Prisma.RegistrationDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RegistrationPayload>
+        }
+        update: {
+          args: Prisma.RegistrationUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RegistrationPayload>
+        }
+        deleteMany: {
+          args: Prisma.RegistrationDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.RegistrationUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.RegistrationUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RegistrationPayload>[]
+        }
+        upsert: {
+          args: Prisma.RegistrationUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RegistrationPayload>
+        }
+        aggregate: {
+          args: Prisma.RegistrationAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateRegistration>
+        }
+        groupBy: {
+          args: Prisma.RegistrationGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.RegistrationGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.RegistrationCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.RegistrationCountAggregateOutputType> | number
+        }
+      }
+    }
+    WaitlistEntry: {
+      payload: Prisma.$WaitlistEntryPayload<ExtArgs>
+      fields: Prisma.WaitlistEntryFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.WaitlistEntryFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WaitlistEntryPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.WaitlistEntryFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WaitlistEntryPayload>
+        }
+        findFirst: {
+          args: Prisma.WaitlistEntryFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WaitlistEntryPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.WaitlistEntryFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WaitlistEntryPayload>
+        }
+        findMany: {
+          args: Prisma.WaitlistEntryFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WaitlistEntryPayload>[]
+        }
+        create: {
+          args: Prisma.WaitlistEntryCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WaitlistEntryPayload>
+        }
+        createMany: {
+          args: Prisma.WaitlistEntryCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.WaitlistEntryCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WaitlistEntryPayload>[]
+        }
+        delete: {
+          args: Prisma.WaitlistEntryDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WaitlistEntryPayload>
+        }
+        update: {
+          args: Prisma.WaitlistEntryUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WaitlistEntryPayload>
+        }
+        deleteMany: {
+          args: Prisma.WaitlistEntryDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.WaitlistEntryUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.WaitlistEntryUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WaitlistEntryPayload>[]
+        }
+        upsert: {
+          args: Prisma.WaitlistEntryUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WaitlistEntryPayload>
+        }
+        aggregate: {
+          args: Prisma.WaitlistEntryAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateWaitlistEntry>
+        }
+        groupBy: {
+          args: Prisma.WaitlistEntryGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WaitlistEntryGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.WaitlistEntryCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WaitlistEntryCountAggregateOutputType> | number
         }
       }
     }
@@ -808,9 +958,6 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
  */
 
 export const TransactionIsolationLevel = runtime.makeStrictEnum({
-  ReadUncommitted: 'ReadUncommitted',
-  ReadCommitted: 'ReadCommitted',
-  RepeatableRead: 'RepeatableRead',
   Serializable: 'Serializable'
 } as const)
 
@@ -875,15 +1022,47 @@ export const VerificationScalarFieldEnum = {
 export type VerificationScalarFieldEnum = (typeof VerificationScalarFieldEnum)[keyof typeof VerificationScalarFieldEnum]
 
 
-export const PostScalarFieldEnum = {
+export const EventScalarFieldEnum = {
   id: 'id',
-  name: 'name',
+  title: 'title',
+  description: 'description',
+  startsAt: 'startsAt',
+  capacity: 'capacity',
+  registrationOpensAt: 'registrationOpensAt',
+  registrationClosesAt: 'registrationClosesAt',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  createdById: 'createdById'
+  updatedAt: 'updatedAt'
 } as const
 
-export type PostScalarFieldEnum = (typeof PostScalarFieldEnum)[keyof typeof PostScalarFieldEnum]
+export type EventScalarFieldEnum = (typeof EventScalarFieldEnum)[keyof typeof EventScalarFieldEnum]
+
+
+export const RegistrationScalarFieldEnum = {
+  id: 'id',
+  status: 'status',
+  registeredAt: 'registeredAt',
+  cancelledAt: 'cancelledAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  eventId: 'eventId',
+  attendeeId: 'attendeeId'
+} as const
+
+export type RegistrationScalarFieldEnum = (typeof RegistrationScalarFieldEnum)[keyof typeof RegistrationScalarFieldEnum]
+
+
+export const WaitlistEntryScalarFieldEnum = {
+  id: 'id',
+  position: 'position',
+  promotedAt: 'promotedAt',
+  cancelledAt: 'cancelledAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  eventId: 'eventId',
+  attendeeId: 'attendeeId'
+} as const
+
+export type WaitlistEntryScalarFieldEnum = (typeof WaitlistEntryScalarFieldEnum)[keyof typeof WaitlistEntryScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -892,14 +1071,6 @@ export const SortOrder = {
 } as const
 
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
-
-
-export const QueryMode = {
-  default: 'default',
-  insensitive: 'insensitive'
-} as const
-
-export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
 
 
 export const NullsOrder = {
@@ -924,23 +1095,9 @@ export type StringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 
 
 
 /**
- * Reference to a field of type 'String[]'
- */
-export type ListStringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'String[]'>
-    
-
-
-/**
  * Reference to a field of type 'DateTime'
  */
 export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
-    
-
-
-/**
- * Reference to a field of type 'DateTime[]'
- */
-export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
     
 
 
@@ -959,9 +1116,9 @@ export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'In
 
 
 /**
- * Reference to a field of type 'Int[]'
+ * Reference to a field of type 'RegistrationStatus'
  */
-export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+export type EnumRegistrationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RegistrationStatus'>
     
 
 
@@ -969,13 +1126,6 @@ export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel,
  * Reference to a field of type 'Float'
  */
 export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
-    
-
-
-/**
- * Reference to a field of type 'Float[]'
- */
-export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
     
 
 /**
@@ -1092,7 +1242,9 @@ export type GlobalOmitConfig = {
   session?: Prisma.SessionOmit
   user?: Prisma.UserOmit
   verification?: Prisma.VerificationOmit
-  post?: Prisma.PostOmit
+  event?: Prisma.EventOmit
+  registration?: Prisma.RegistrationOmit
+  waitlistEntry?: Prisma.WaitlistEntryOmit
 }
 
 /* Types for Logging */

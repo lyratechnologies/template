@@ -9,7 +9,8 @@ export const UserAggregateResultSchema = z.object({  _count: z.object({
     updatedAt: z.number(),
     accounts: z.number(),
     sessions: z.number(),
-    posts: z.number()
+    registrations: z.number(),
+    waitlistEntries: z.number()
   }).optional(),
   _min: z.object({
     id: z.string().nullable(),

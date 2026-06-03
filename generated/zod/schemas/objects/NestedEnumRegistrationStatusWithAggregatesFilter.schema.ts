@@ -1,0 +1,17 @@
+import * as z from 'zod';
+import type { Prisma } from '../../../prisma/client';
+import { RegistrationStatusSchema } from '../enums/RegistrationStatus.schema';
+import { NestedIntFilterObjectSchema as NestedIntFilterObjectSchema } from './NestedIntFilter.schema';
+import { NestedEnumRegistrationStatusFilterObjectSchema as NestedEnumRegistrationStatusFilterObjectSchema } from './NestedEnumRegistrationStatusFilter.schema'
+
+const nestedenumregistrationstatuswithaggregatesfilterSchema = z.object({
+  equals: RegistrationStatusSchema.optional(),
+  in: RegistrationStatusSchema.array().optional(),
+  notIn: RegistrationStatusSchema.array().optional(),
+  not: z.union([RegistrationStatusSchema, z.lazy(() => NestedEnumRegistrationStatusWithAggregatesFilterObjectSchema)]).optional(),
+  _count: z.lazy(() => NestedIntFilterObjectSchema).optional(),
+  _min: z.lazy(() => NestedEnumRegistrationStatusFilterObjectSchema).optional(),
+  _max: z.lazy(() => NestedEnumRegistrationStatusFilterObjectSchema).optional()
+}).strict();
+export const NestedEnumRegistrationStatusWithAggregatesFilterObjectSchema: z.ZodType<Prisma.NestedEnumRegistrationStatusWithAggregatesFilter> = nestedenumregistrationstatuswithaggregatesfilterSchema as unknown as z.ZodType<Prisma.NestedEnumRegistrationStatusWithAggregatesFilter>;
+export const NestedEnumRegistrationStatusWithAggregatesFilterObjectZodSchema = nestedenumregistrationstatuswithaggregatesfilterSchema;

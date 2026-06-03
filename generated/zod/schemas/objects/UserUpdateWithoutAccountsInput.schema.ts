@@ -5,7 +5,8 @@ import { BoolFieldUpdateOperationsInputObjectSchema as BoolFieldUpdateOperations
 import { NullableStringFieldUpdateOperationsInputObjectSchema as NullableStringFieldUpdateOperationsInputObjectSchema } from './NullableStringFieldUpdateOperationsInput.schema';
 import { DateTimeFieldUpdateOperationsInputObjectSchema as DateTimeFieldUpdateOperationsInputObjectSchema } from './DateTimeFieldUpdateOperationsInput.schema';
 import { SessionUpdateManyWithoutUserNestedInputObjectSchema as SessionUpdateManyWithoutUserNestedInputObjectSchema } from './SessionUpdateManyWithoutUserNestedInput.schema';
-import { PostUpdateManyWithoutCreatedByNestedInputObjectSchema as PostUpdateManyWithoutCreatedByNestedInputObjectSchema } from './PostUpdateManyWithoutCreatedByNestedInput.schema'
+import { RegistrationUpdateManyWithoutAttendeeNestedInputObjectSchema as RegistrationUpdateManyWithoutAttendeeNestedInputObjectSchema } from './RegistrationUpdateManyWithoutAttendeeNestedInput.schema';
+import { WaitlistEntryUpdateManyWithoutAttendeeNestedInputObjectSchema as WaitlistEntryUpdateManyWithoutAttendeeNestedInputObjectSchema } from './WaitlistEntryUpdateManyWithoutAttendeeNestedInput.schema'
 
 const makeSchema = () => z.object({
   id: z.union([z.string(), z.lazy(() => StringFieldUpdateOperationsInputObjectSchema)]).optional(),
@@ -16,7 +17,8 @@ const makeSchema = () => z.object({
   createdAt: z.union([z.coerce.date(), z.lazy(() => DateTimeFieldUpdateOperationsInputObjectSchema)]).optional(),
   updatedAt: z.union([z.coerce.date(), z.lazy(() => DateTimeFieldUpdateOperationsInputObjectSchema)]).optional(),
   sessions: z.lazy(() => SessionUpdateManyWithoutUserNestedInputObjectSchema).optional(),
-  posts: z.lazy(() => PostUpdateManyWithoutCreatedByNestedInputObjectSchema).optional()
+  registrations: z.lazy(() => RegistrationUpdateManyWithoutAttendeeNestedInputObjectSchema).optional(),
+  waitlistEntries: z.lazy(() => WaitlistEntryUpdateManyWithoutAttendeeNestedInputObjectSchema).optional()
 }).strict();
 export const UserUpdateWithoutAccountsInputObjectSchema: z.ZodType<Prisma.UserUpdateWithoutAccountsInput> = makeSchema() as unknown as z.ZodType<Prisma.UserUpdateWithoutAccountsInput>;
 export const UserUpdateWithoutAccountsInputObjectZodSchema = makeSchema();

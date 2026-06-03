@@ -7,4 +7,6 @@ export { AccountInputSchema } from './Account.input';
 export { SessionInputSchema } from './Session.input';
 export { UserInputSchema } from './User.input';
 export { VerificationInputSchema } from './Verification.input';
-export { PostInputSchema } from './Post.input';
+export { EventInputSchema } from './Event.input';
+export { RegistrationInputSchema } from './Registration.input';
+export { WaitlistEntryInputSchema } from './WaitlistEntry.input';

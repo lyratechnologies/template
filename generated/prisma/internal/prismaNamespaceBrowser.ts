@@ -55,7 +55,9 @@ export const ModelName = {
   Session: 'Session',
   User: 'User',
   Verification: 'Verification',
-  Post: 'Post'
+  Event: 'Event',
+  Registration: 'Registration',
+  WaitlistEntry: 'WaitlistEntry'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -65,9 +67,6 @@ export type ModelName = (typeof ModelName)[keyof typeof ModelName]
  */
 
 export const TransactionIsolationLevel = runtime.makeStrictEnum({
-  ReadUncommitted: 'ReadUncommitted',
-  ReadCommitted: 'ReadCommitted',
-  RepeatableRead: 'RepeatableRead',
   Serializable: 'Serializable'
 } as const)
 
@@ -132,15 +131,47 @@ export const VerificationScalarFieldEnum = {
 export type VerificationScalarFieldEnum = (typeof VerificationScalarFieldEnum)[keyof typeof VerificationScalarFieldEnum]
 
 
-export const PostScalarFieldEnum = {
+export const EventScalarFieldEnum = {
   id: 'id',
-  name: 'name',
+  title: 'title',
+  description: 'description',
+  startsAt: 'startsAt',
+  capacity: 'capacity',
+  registrationOpensAt: 'registrationOpensAt',
+  registrationClosesAt: 'registrationClosesAt',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  createdById: 'createdById'
+  updatedAt: 'updatedAt'
 } as const
 
-export type PostScalarFieldEnum = (typeof PostScalarFieldEnum)[keyof typeof PostScalarFieldEnum]
+export type EventScalarFieldEnum = (typeof EventScalarFieldEnum)[keyof typeof EventScalarFieldEnum]
+
+
+export const RegistrationScalarFieldEnum = {
+  id: 'id',
+  status: 'status',
+  registeredAt: 'registeredAt',
+  cancelledAt: 'cancelledAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  eventId: 'eventId',
+  attendeeId: 'attendeeId'
+} as const
+
+export type RegistrationScalarFieldEnum = (typeof RegistrationScalarFieldEnum)[keyof typeof RegistrationScalarFieldEnum]
+
+
+export const WaitlistEntryScalarFieldEnum = {
+  id: 'id',
+  position: 'position',
+  promotedAt: 'promotedAt',
+  cancelledAt: 'cancelledAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  eventId: 'eventId',
+  attendeeId: 'attendeeId'
+} as const
+
+export type WaitlistEntryScalarFieldEnum = (typeof WaitlistEntryScalarFieldEnum)[keyof typeof WaitlistEntryScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -149,14 +180,6 @@ export const SortOrder = {
 } as const
 
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
-
-
-export const QueryMode = {
-  default: 'default',
-  insensitive: 'insensitive'
-} as const
-
-export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
 
 
 export const NullsOrder = {

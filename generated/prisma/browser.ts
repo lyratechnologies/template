@@ -38,7 +38,17 @@ export type User = Prisma.UserModel
  */
 export type Verification = Prisma.VerificationModel
 /**
- * Model Post
+ * Model Event
  * 
  */
-export type Post = Prisma.PostModel
+export type Event = Prisma.EventModel
+/**
+ * Model Registration
+ * 
+ */
+export type Registration = Prisma.RegistrationModel
+/**
+ * Model WaitlistEntry
+ * 
+ */
+export type WaitlistEntry = Prisma.WaitlistEntryModel

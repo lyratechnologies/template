@@ -4,7 +4,8 @@ import { SortOrderSchema } from '../enums/SortOrder.schema';
 import { SortOrderInputObjectSchema as SortOrderInputObjectSchema } from './SortOrderInput.schema';
 import { AccountOrderByRelationAggregateInputObjectSchema as AccountOrderByRelationAggregateInputObjectSchema } from './AccountOrderByRelationAggregateInput.schema';
 import { SessionOrderByRelationAggregateInputObjectSchema as SessionOrderByRelationAggregateInputObjectSchema } from './SessionOrderByRelationAggregateInput.schema';
-import { PostOrderByRelationAggregateInputObjectSchema as PostOrderByRelationAggregateInputObjectSchema } from './PostOrderByRelationAggregateInput.schema'
+import { RegistrationOrderByRelationAggregateInputObjectSchema as RegistrationOrderByRelationAggregateInputObjectSchema } from './RegistrationOrderByRelationAggregateInput.schema';
+import { WaitlistEntryOrderByRelationAggregateInputObjectSchema as WaitlistEntryOrderByRelationAggregateInputObjectSchema } from './WaitlistEntryOrderByRelationAggregateInput.schema'
 
 const makeSchema = () => z.object({
   id: SortOrderSchema.optional(),
@@ -16,7 +17,8 @@ const makeSchema = () => z.object({
   updatedAt: SortOrderSchema.optional(),
   accounts: z.lazy(() => AccountOrderByRelationAggregateInputObjectSchema).optional(),
   sessions: z.lazy(() => SessionOrderByRelationAggregateInputObjectSchema).optional(),
-  posts: z.lazy(() => PostOrderByRelationAggregateInputObjectSchema).optional()
+  registrations: z.lazy(() => RegistrationOrderByRelationAggregateInputObjectSchema).optional(),
+  waitlistEntries: z.lazy(() => WaitlistEntryOrderByRelationAggregateInputObjectSchema).optional()
 }).strict();
 export const UserOrderByWithRelationInputObjectSchema: z.ZodType<Prisma.UserOrderByWithRelationInput> = makeSchema() as unknown as z.ZodType<Prisma.UserOrderByWithRelationInput>;
 export const UserOrderByWithRelationInputObjectZodSchema = makeSchema();

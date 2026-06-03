@@ -10,7 +10,8 @@ export const UserResultSchema = z.object({
     updatedAt: z.date(),
     accounts: z.array(z.unknown()),
     sessions: z.array(z.unknown()),
-    posts: z.array(z.unknown())
+    registrations: z.array(z.unknown()),
+    waitlistEntries: z.array(z.unknown())
 }).strict();
 
 export type UserResultType = z.infer<typeof UserResultSchema>;

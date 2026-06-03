@@ -10,8 +10,9 @@ import { db } from "~/server/db";
 export const auth = betterAuth({
   appName: "Lyra Template",
   baseURL: env.BETTER_AUTH_URL,
+  secret: env.BETTER_AUTH_SECRET,
   database: prismaAdapter(db, {
-    provider: "postgresql",
+    provider: "sqlite",
   }),
   socialProviders: {
     discord: {

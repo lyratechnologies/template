@@ -6,7 +6,8 @@ import { StringNullableFilterObjectSchema as StringNullableFilterObjectSchema } 
 import { DateTimeFilterObjectSchema as DateTimeFilterObjectSchema } from './DateTimeFilter.schema';
 import { AccountListRelationFilterObjectSchema as AccountListRelationFilterObjectSchema } from './AccountListRelationFilter.schema';
 import { SessionListRelationFilterObjectSchema as SessionListRelationFilterObjectSchema } from './SessionListRelationFilter.schema';
-import { PostListRelationFilterObjectSchema as PostListRelationFilterObjectSchema } from './PostListRelationFilter.schema'
+import { RegistrationListRelationFilterObjectSchema as RegistrationListRelationFilterObjectSchema } from './RegistrationListRelationFilter.schema';
+import { WaitlistEntryListRelationFilterObjectSchema as WaitlistEntryListRelationFilterObjectSchema } from './WaitlistEntryListRelationFilter.schema'
 
 const userwhereinputSchema = z.object({
   AND: z.union([z.lazy(() => UserWhereInputObjectSchema), z.lazy(() => UserWhereInputObjectSchema).array()]).optional(),
@@ -21,7 +22,8 @@ const userwhereinputSchema = z.object({
   updatedAt: z.union([z.lazy(() => DateTimeFilterObjectSchema), z.coerce.date()]).optional(),
   accounts: z.lazy(() => AccountListRelationFilterObjectSchema).optional(),
   sessions: z.lazy(() => SessionListRelationFilterObjectSchema).optional(),
-  posts: z.lazy(() => PostListRelationFilterObjectSchema).optional()
+  registrations: z.lazy(() => RegistrationListRelationFilterObjectSchema).optional(),
+  waitlistEntries: z.lazy(() => WaitlistEntryListRelationFilterObjectSchema).optional()
 }).strict();
 export const UserWhereInputObjectSchema: z.ZodType<Prisma.UserWhereInput> = userwhereinputSchema as unknown as z.ZodType<Prisma.UserWhereInput>;
 export const UserWhereInputObjectZodSchema = userwhereinputSchema;

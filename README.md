@@ -23,6 +23,7 @@ Common commands:
 bun run db:generate
 bun run db:push
 bun run db:migrate
+bun run test
 bun run typecheck
 bun run lint
 bun run build
@@ -33,8 +34,8 @@ bun run build
 Create a local `.env` file with:
 
 ```bash
-DATABASE_URL="postgresql://postgres:postgres@localhost:5432/lyra_template"
-AUTH_SECRET="replace-me"
+DATABASE_URL="file:./dev.db"
+BETTER_AUTH_SECRET="replace-me"
 AUTH_DISCORD_ID="replace-me"
 AUTH_DISCORD_SECRET="replace-me"
 BETTER_AUTH_URL="http://localhost:3000"

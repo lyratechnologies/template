@@ -200,7 +200,8 @@ export type UserWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   accounts?: Prisma.AccountListRelationFilter
   sessions?: Prisma.SessionListRelationFilter
-  posts?: Prisma.PostListRelationFilter
+  registrations?: Prisma.RegistrationListRelationFilter
+  waitlistEntries?: Prisma.WaitlistEntryListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -213,7 +214,8 @@ export type UserOrderByWithRelationInput = {
   updatedAt?: Prisma.SortOrder
   accounts?: Prisma.AccountOrderByRelationAggregateInput
   sessions?: Prisma.SessionOrderByRelationAggregateInput
-  posts?: Prisma.PostOrderByRelationAggregateInput
+  registrations?: Prisma.RegistrationOrderByRelationAggregateInput
+  waitlistEntries?: Prisma.WaitlistEntryOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -229,7 +231,8 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   accounts?: Prisma.AccountListRelationFilter
   sessions?: Prisma.SessionListRelationFilter
-  posts?: Prisma.PostListRelationFilter
+  registrations?: Prisma.RegistrationListRelationFilter
+  waitlistEntries?: Prisma.WaitlistEntryListRelationFilter
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -268,7 +271,8 @@ export type UserCreateInput = {
   updatedAt?: Date | string
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
-  posts?: Prisma.PostCreateNestedManyWithoutCreatedByInput
+  registrations?: Prisma.RegistrationCreateNestedManyWithoutAttendeeInput
+  waitlistEntries?: Prisma.WaitlistEntryCreateNestedManyWithoutAttendeeInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -281,7 +285,8 @@ export type UserUncheckedCreateInput = {
   updatedAt?: Date | string
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
-  posts?: Prisma.PostUncheckedCreateNestedManyWithoutCreatedByInput
+  registrations?: Prisma.RegistrationUncheckedCreateNestedManyWithoutAttendeeInput
+  waitlistEntries?: Prisma.WaitlistEntryUncheckedCreateNestedManyWithoutAttendeeInput
 }
 
 export type UserUpdateInput = {
@@ -294,7 +299,8 @@ export type UserUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
-  posts?: Prisma.PostUpdateManyWithoutCreatedByNestedInput
+  registrations?: Prisma.RegistrationUpdateManyWithoutAttendeeNestedInput
+  waitlistEntries?: Prisma.WaitlistEntryUpdateManyWithoutAttendeeNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -307,7 +313,8 @@ export type UserUncheckedUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
-  posts?: Prisma.PostUncheckedUpdateManyWithoutCreatedByNestedInput
+  registrations?: Prisma.RegistrationUncheckedUpdateManyWithoutAttendeeNestedInput
+  waitlistEntries?: Prisma.WaitlistEntryUncheckedUpdateManyWithoutAttendeeNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -407,18 +414,32 @@ export type BoolFieldUpdateOperationsInput = {
   set?: boolean
 }
 
-export type UserCreateNestedOneWithoutPostsInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutPostsInput, Prisma.UserUncheckedCreateWithoutPostsInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPostsInput
+export type UserCreateNestedOneWithoutRegistrationsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutRegistrationsInput, Prisma.UserUncheckedCreateWithoutRegistrationsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutRegistrationsInput
   connect?: Prisma.UserWhereUniqueInput
 }
 
-export type UserUpdateOneRequiredWithoutPostsNestedInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutPostsInput, Prisma.UserUncheckedCreateWithoutPostsInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPostsInput
-  upsert?: Prisma.UserUpsertWithoutPostsInput
+export type UserUpdateOneRequiredWithoutRegistrationsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutRegistrationsInput, Prisma.UserUncheckedCreateWithoutRegistrationsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutRegistrationsInput
+  upsert?: Prisma.UserUpsertWithoutRegistrationsInput
   connect?: Prisma.UserWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutPostsInput, Prisma.UserUpdateWithoutPostsInput>, Prisma.UserUncheckedUpdateWithoutPostsInput>
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutRegistrationsInput, Prisma.UserUpdateWithoutRegistrationsInput>, Prisma.UserUncheckedUpdateWithoutRegistrationsInput>
+}
+
+export type UserCreateNestedOneWithoutWaitlistEntriesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutWaitlistEntriesInput, Prisma.UserUncheckedCreateWithoutWaitlistEntriesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutWaitlistEntriesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutWaitlistEntriesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutWaitlistEntriesInput, Prisma.UserUncheckedCreateWithoutWaitlistEntriesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutWaitlistEntriesInput
+  upsert?: Prisma.UserUpsertWithoutWaitlistEntriesInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutWaitlistEntriesInput, Prisma.UserUpdateWithoutWaitlistEntriesInput>, Prisma.UserUncheckedUpdateWithoutWaitlistEntriesInput>
 }
 
 export type UserCreateWithoutAccountsInput = {
@@ -430,7 +451,8 @@ export type UserCreateWithoutAccountsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
-  posts?: Prisma.PostCreateNestedManyWithoutCreatedByInput
+  registrations?: Prisma.RegistrationCreateNestedManyWithoutAttendeeInput
+  waitlistEntries?: Prisma.WaitlistEntryCreateNestedManyWithoutAttendeeInput
 }
 
 export type UserUncheckedCreateWithoutAccountsInput = {
@@ -442,7 +464,8 @@ export type UserUncheckedCreateWithoutAccountsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
-  posts?: Prisma.PostUncheckedCreateNestedManyWithoutCreatedByInput
+  registrations?: Prisma.RegistrationUncheckedCreateNestedManyWithoutAttendeeInput
+  waitlistEntries?: Prisma.WaitlistEntryUncheckedCreateNestedManyWithoutAttendeeInput
 }
 
 export type UserCreateOrConnectWithoutAccountsInput = {
@@ -470,7 +493,8 @@ export type UserUpdateWithoutAccountsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
-  posts?: Prisma.PostUpdateManyWithoutCreatedByNestedInput
+  registrations?: Prisma.RegistrationUpdateManyWithoutAttendeeNestedInput
+  waitlistEntries?: Prisma.WaitlistEntryUpdateManyWithoutAttendeeNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAccountsInput = {
@@ -482,7 +506,8 @@ export type UserUncheckedUpdateWithoutAccountsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
-  posts?: Prisma.PostUncheckedUpdateManyWithoutCreatedByNestedInput
+  registrations?: Prisma.RegistrationUncheckedUpdateManyWithoutAttendeeNestedInput
+  waitlistEntries?: Prisma.WaitlistEntryUncheckedUpdateManyWithoutAttendeeNestedInput
 }
 
 export type UserCreateWithoutSessionsInput = {
@@ -494,7 +519,8 @@ export type UserCreateWithoutSessionsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
-  posts?: Prisma.PostCreateNestedManyWithoutCreatedByInput
+  registrations?: Prisma.RegistrationCreateNestedManyWithoutAttendeeInput
+  waitlistEntries?: Prisma.WaitlistEntryCreateNestedManyWithoutAttendeeInput
 }
 
 export type UserUncheckedCreateWithoutSessionsInput = {
@@ -506,7 +532,8 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
-  posts?: Prisma.PostUncheckedCreateNestedManyWithoutCreatedByInput
+  registrations?: Prisma.RegistrationUncheckedCreateNestedManyWithoutAttendeeInput
+  waitlistEntries?: Prisma.WaitlistEntryUncheckedCreateNestedManyWithoutAttendeeInput
 }
 
 export type UserCreateOrConnectWithoutSessionsInput = {
@@ -534,7 +561,8 @@ export type UserUpdateWithoutSessionsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
-  posts?: Prisma.PostUpdateManyWithoutCreatedByNestedInput
+  registrations?: Prisma.RegistrationUpdateManyWithoutAttendeeNestedInput
+  waitlistEntries?: Prisma.WaitlistEntryUpdateManyWithoutAttendeeNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -546,10 +574,11 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
-  posts?: Prisma.PostUncheckedUpdateManyWithoutCreatedByNestedInput
+  registrations?: Prisma.RegistrationUncheckedUpdateManyWithoutAttendeeNestedInput
+  waitlistEntries?: Prisma.WaitlistEntryUncheckedUpdateManyWithoutAttendeeNestedInput
 }
 
-export type UserCreateWithoutPostsInput = {
+export type UserCreateWithoutRegistrationsInput = {
   id?: string
   name: string
   email: string
@@ -559,9 +588,10 @@ export type UserCreateWithoutPostsInput = {
   updatedAt?: Date | string
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  waitlistEntries?: Prisma.WaitlistEntryCreateNestedManyWithoutAttendeeInput
 }
 
-export type UserUncheckedCreateWithoutPostsInput = {
+export type UserUncheckedCreateWithoutRegistrationsInput = {
   id?: string
   name: string
   email: string
@@ -571,25 +601,26 @@ export type UserUncheckedCreateWithoutPostsInput = {
   updatedAt?: Date | string
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  waitlistEntries?: Prisma.WaitlistEntryUncheckedCreateNestedManyWithoutAttendeeInput
 }
 
-export type UserCreateOrConnectWithoutPostsInput = {
+export type UserCreateOrConnectWithoutRegistrationsInput = {
   where: Prisma.UserWhereUniqueInput
-  create: Prisma.XOR<Prisma.UserCreateWithoutPostsInput, Prisma.UserUncheckedCreateWithoutPostsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutRegistrationsInput, Prisma.UserUncheckedCreateWithoutRegistrationsInput>
 }
 
-export type UserUpsertWithoutPostsInput = {
-  update: Prisma.XOR<Prisma.UserUpdateWithoutPostsInput, Prisma.UserUncheckedUpdateWithoutPostsInput>
-  create: Prisma.XOR<Prisma.UserCreateWithoutPostsInput, Prisma.UserUncheckedCreateWithoutPostsInput>
+export type UserUpsertWithoutRegistrationsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutRegistrationsInput, Prisma.UserUncheckedUpdateWithoutRegistrationsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutRegistrationsInput, Prisma.UserUncheckedCreateWithoutRegistrationsInput>
   where?: Prisma.UserWhereInput
 }
 
-export type UserUpdateToOneWithWhereWithoutPostsInput = {
+export type UserUpdateToOneWithWhereWithoutRegistrationsInput = {
   where?: Prisma.UserWhereInput
-  data: Prisma.XOR<Prisma.UserUpdateWithoutPostsInput, Prisma.UserUncheckedUpdateWithoutPostsInput>
+  data: Prisma.XOR<Prisma.UserUpdateWithoutRegistrationsInput, Prisma.UserUncheckedUpdateWithoutRegistrationsInput>
 }
 
-export type UserUpdateWithoutPostsInput = {
+export type UserUpdateWithoutRegistrationsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
@@ -599,9 +630,10 @@ export type UserUpdateWithoutPostsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  waitlistEntries?: Prisma.WaitlistEntryUpdateManyWithoutAttendeeNestedInput
 }
 
-export type UserUncheckedUpdateWithoutPostsInput = {
+export type UserUncheckedUpdateWithoutRegistrationsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
@@ -611,6 +643,75 @@ export type UserUncheckedUpdateWithoutPostsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  waitlistEntries?: Prisma.WaitlistEntryUncheckedUpdateManyWithoutAttendeeNestedInput
+}
+
+export type UserCreateWithoutWaitlistEntriesInput = {
+  id?: string
+  name: string
+  email: string
+  emailVerified?: boolean
+  image?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  registrations?: Prisma.RegistrationCreateNestedManyWithoutAttendeeInput
+}
+
+export type UserUncheckedCreateWithoutWaitlistEntriesInput = {
+  id?: string
+  name: string
+  email: string
+  emailVerified?: boolean
+  image?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  registrations?: Prisma.RegistrationUncheckedCreateNestedManyWithoutAttendeeInput
+}
+
+export type UserCreateOrConnectWithoutWaitlistEntriesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutWaitlistEntriesInput, Prisma.UserUncheckedCreateWithoutWaitlistEntriesInput>
+}
+
+export type UserUpsertWithoutWaitlistEntriesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutWaitlistEntriesInput, Prisma.UserUncheckedUpdateWithoutWaitlistEntriesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutWaitlistEntriesInput, Prisma.UserUncheckedCreateWithoutWaitlistEntriesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutWaitlistEntriesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutWaitlistEntriesInput, Prisma.UserUncheckedUpdateWithoutWaitlistEntriesInput>
+}
+
+export type UserUpdateWithoutWaitlistEntriesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  registrations?: Prisma.RegistrationUpdateManyWithoutAttendeeNestedInput
+}
+
+export type UserUncheckedUpdateWithoutWaitlistEntriesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  registrations?: Prisma.RegistrationUncheckedUpdateManyWithoutAttendeeNestedInput
 }
 
 
@@ -621,13 +722,15 @@ export type UserUncheckedUpdateWithoutPostsInput = {
 export type UserCountOutputType = {
   accounts: number
   sessions: number
-  posts: number
+  registrations: number
+  waitlistEntries: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   accounts?: boolean | UserCountOutputTypeCountAccountsArgs
   sessions?: boolean | UserCountOutputTypeCountSessionsArgs
-  posts?: boolean | UserCountOutputTypeCountPostsArgs
+  registrations?: boolean | UserCountOutputTypeCountRegistrationsArgs
+  waitlistEntries?: boolean | UserCountOutputTypeCountWaitlistEntriesArgs
 }
 
 /**
@@ -657,8 +760,15 @@ export type UserCountOutputTypeCountSessionsArgs<ExtArgs extends runtime.Types.E
 /**
  * UserCountOutputType without action
  */
-export type UserCountOutputTypeCountPostsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.PostWhereInput
+export type UserCountOutputTypeCountRegistrationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.RegistrationWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountWaitlistEntriesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.WaitlistEntryWhereInput
 }
 
 
@@ -672,7 +782,8 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   updatedAt?: boolean
   accounts?: boolean | Prisma.User$accountsArgs<ExtArgs>
   sessions?: boolean | Prisma.User$sessionsArgs<ExtArgs>
-  posts?: boolean | Prisma.User$postsArgs<ExtArgs>
+  registrations?: boolean | Prisma.User$registrationsArgs<ExtArgs>
+  waitlistEntries?: boolean | Prisma.User$waitlistEntriesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -710,7 +821,8 @@ export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = run
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   accounts?: boolean | Prisma.User$accountsArgs<ExtArgs>
   sessions?: boolean | Prisma.User$sessionsArgs<ExtArgs>
-  posts?: boolean | Prisma.User$postsArgs<ExtArgs>
+  registrations?: boolean | Prisma.User$registrationsArgs<ExtArgs>
+  waitlistEntries?: boolean | Prisma.User$waitlistEntriesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -721,7 +833,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   objects: {
     accounts: Prisma.$AccountPayload<ExtArgs>[]
     sessions: Prisma.$SessionPayload<ExtArgs>[]
-    posts: Prisma.$PostPayload<ExtArgs>[]
+    registrations: Prisma.$RegistrationPayload<ExtArgs>[]
+    waitlistEntries: Prisma.$WaitlistEntryPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1127,7 +1240,8 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   readonly [Symbol.toStringTag]: "PrismaPromise"
   accounts<T extends Prisma.User$accountsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$accountsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   sessions<T extends Prisma.User$sessionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  posts<T extends Prisma.User$postsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$postsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PostPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  registrations<T extends Prisma.User$registrationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$registrationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RegistrationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  waitlistEntries<T extends Prisma.User$waitlistEntriesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$waitlistEntriesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WaitlistEntryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1398,7 +1512,6 @@ export type UserCreateManyArgs<ExtArgs extends runtime.Types.Extensions.Internal
    * The data used to create many Users.
    */
   data: Prisma.UserCreateManyInput | Prisma.UserCreateManyInput[]
-  skipDuplicates?: boolean
 }
 
 /**
@@ -1417,7 +1530,6 @@ export type UserCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions
    * The data used to create many Users.
    */
   data: Prisma.UserCreateManyInput | Prisma.UserCreateManyInput[]
-  skipDuplicates?: boolean
 }
 
 /**
@@ -1605,27 +1717,51 @@ export type User$sessionsArgs<ExtArgs extends runtime.Types.Extensions.InternalA
 }
 
 /**
- * User.posts
+ * User.registrations
  */
-export type User$postsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type User$registrationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the Post
+   * Select specific fields to fetch from the Registration
    */
-  select?: Prisma.PostSelect<ExtArgs> | null
+  select?: Prisma.RegistrationSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the Post
+   * Omit specific fields from the Registration
    */
-  omit?: Prisma.PostOmit<ExtArgs> | null
+  omit?: Prisma.RegistrationOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.PostInclude<ExtArgs> | null
-  where?: Prisma.PostWhereInput
-  orderBy?: Prisma.PostOrderByWithRelationInput | Prisma.PostOrderByWithRelationInput[]
-  cursor?: Prisma.PostWhereUniqueInput
+  include?: Prisma.RegistrationInclude<ExtArgs> | null
+  where?: Prisma.RegistrationWhereInput
+  orderBy?: Prisma.RegistrationOrderByWithRelationInput | Prisma.RegistrationOrderByWithRelationInput[]
+  cursor?: Prisma.RegistrationWhereUniqueInput
   take?: number
   skip?: number
-  distinct?: Prisma.PostScalarFieldEnum | Prisma.PostScalarFieldEnum[]
+  distinct?: Prisma.RegistrationScalarFieldEnum | Prisma.RegistrationScalarFieldEnum[]
+}
+
+/**
+ * User.waitlistEntries
+ */
+export type User$waitlistEntriesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the WaitlistEntry
+   */
+  select?: Prisma.WaitlistEntrySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the WaitlistEntry
+   */
+  omit?: Prisma.WaitlistEntryOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.WaitlistEntryInclude<ExtArgs> | null
+  where?: Prisma.WaitlistEntryWhereInput
+  orderBy?: Prisma.WaitlistEntryOrderByWithRelationInput | Prisma.WaitlistEntryOrderByWithRelationInput[]
+  cursor?: Prisma.WaitlistEntryWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.WaitlistEntryScalarFieldEnum | Prisma.WaitlistEntryScalarFieldEnum[]
 }
 
 /**

@@ -1,0 +1,12 @@
+import type { Prisma } from '../../prisma/client';
+import * as z from 'zod';
+import { RegistrationOrderByWithRelationInputObjectSchema as RegistrationOrderByWithRelationInputObjectSchema } from './objects/RegistrationOrderByWithRelationInput.schema';
+import { RegistrationWhereInputObjectSchema as RegistrationWhereInputObjectSchema } from './objects/RegistrationWhereInput.schema';
+import { RegistrationWhereUniqueInputObjectSchema as RegistrationWhereUniqueInputObjectSchema } from './objects/RegistrationWhereUniqueInput.schema';
+import { RegistrationCountAggregateInputObjectSchema as RegistrationCountAggregateInputObjectSchema } from './objects/RegistrationCountAggregateInput.schema';
+import { RegistrationMinAggregateInputObjectSchema as RegistrationMinAggregateInputObjectSchema } from './objects/RegistrationMinAggregateInput.schema';
+import { RegistrationMaxAggregateInputObjectSchema as RegistrationMaxAggregateInputObjectSchema } from './objects/RegistrationMaxAggregateInput.schema';
+
+export const RegistrationAggregateSchema: z.ZodType<Prisma.RegistrationAggregateArgs> = z.object({ orderBy: z.union([RegistrationOrderByWithRelationInputObjectSchema, RegistrationOrderByWithRelationInputObjectSchema.array()]).optional(), where: RegistrationWhereInputObjectSchema.optional(), cursor: RegistrationWhereUniqueInputObjectSchema.optional(), take: z.number().optional(), skip: z.number().optional(), _count: z.union([ z.literal(true), RegistrationCountAggregateInputObjectSchema ]).optional(), _min: RegistrationMinAggregateInputObjectSchema.optional(), _max: RegistrationMaxAggregateInputObjectSchema.optional() }).strict() as unknown as z.ZodType<Prisma.RegistrationAggregateArgs>;
+
+export const RegistrationAggregateZodSchema = z.object({ orderBy: z.union([RegistrationOrderByWithRelationInputObjectSchema, RegistrationOrderByWithRelationInputObjectSchema.array()]).optional(), where: RegistrationWhereInputObjectSchema.optional(), cursor: RegistrationWhereUniqueInputObjectSchema.optional(), take: z.number().optional(), skip: z.number().optional(), _count: z.union([ z.literal(true), RegistrationCountAggregateInputObjectSchema ]).optional(), _min: RegistrationMinAggregateInputObjectSchema.optional(), _max: RegistrationMaxAggregateInputObjectSchema.optional() }).strict();

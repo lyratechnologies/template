@@ -26,10 +26,10 @@
  * Example usage:
  * <Await
  *   fallback={<LoadingSpinner />}
- *   prefetch={[trpc.post.all.queryOptions()]}
+ *   prefetch={[trpc.events.list.queryOptions()]}
  *   ErrorBoundaryComponent={ErrorBoundary}
  * >
- *   <PostList />
+ *   <EventList />
  * </Await>
  */
 /* eslint-disable @typescript-eslint/no-explicit-any */

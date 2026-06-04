@@ -1,11 +1,11 @@
-import type { RegistrationRepository } from "../repositories/registration-repository";
+import type { RegistrationRepository } from "../repository";
 import type { PrismaClient } from "generated/prisma/client";
 
 import {
   getActiveWaitlistRank,
   getNextWaitlistSequencePosition,
-} from "../domain/registration";
-import { toRegistrationSummary, toWaitlistEntrySummary } from "./helper";
+} from "../../../domain/registration";
+import { toRegistrationSummary, toWaitlistEntrySummary } from "./prisma-mappers";
 
 export function createPrismaRegistrationRepository(
   db: PrismaClient

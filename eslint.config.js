@@ -8,6 +8,45 @@ const featureNames = readdirSync(new URL("./src/features", import.meta.url), {
   .filter((entry) => entry.isDirectory())
   .map((entry) => entry.name);
 
+const serviceFolderNamesByFeature = Object.fromEntries(
+  featureNames.map((featureName) => {
+    try {
+      return [
+        featureName,
+        readdirSync(
+          new URL(`./src/features/${featureName}/services`, import.meta.url),
+          { withFileTypes: true }
+        )
+          .filter((entry) => entry.isDirectory())
+          .map((entry) => entry.name),
+      ];
+    } catch {
+      return [featureName, []];
+    }
+  })
+);
+
+const repositoryFolderNamesByFeature = Object.fromEntries(
+  featureNames.map((featureName) => {
+    try {
+      return [
+        featureName,
+        readdirSync(
+          new URL(
+            `./src/features/${featureName}/repositories`,
+            import.meta.url
+          ),
+          { withFileTypes: true }
+        )
+          .filter((entry) => entry.isDirectory())
+          .map((entry) => entry.name),
+      ];
+    } catch {
+      return [featureName, []];
+    }
+  })
+);
+
 /** @type {import("typescript-eslint").ConfigWithExtends[]} */
 const featureBarrelImportRestrictions = featureNames.map((featureName) => ({
   files: [
@@ -86,7 +125,6 @@ const cleanArchitectureImportRestrictions = featureNames.flatMap(
               {
                 group: [
                   "../api/**",
-                  "../adapters/**",
                   "../repositories/**",
                   "../services/**",
                   "../ui/**",
@@ -150,8 +188,11 @@ const cleanArchitectureImportRestrictions = featureNames.flatMap(
               {
                 group: [
                   "../api/**",
-                  "../adapters/**",
+                  "../../api/**",
+                  "../repositories/**/adapters/**",
+                  "../../repositories/**/adapters/**",
                   "../ui/**",
+                  "../../ui/**",
                   "~/server/**",
                   "~/trpc/**",
                   "generated/**",
@@ -169,8 +210,8 @@ const cleanArchitectureImportRestrictions = featureNames.flatMap(
     },
     {
       files: [
-        `src/features/${featureName}/repositories/**/*.ts`,
-        `src/features/${featureName}/repositories/**/*.tsx`,
+        `src/features/${featureName}/repositories/**/repository.ts`,
+        `src/features/${featureName}/repositories/**/index.ts`,
       ],
       rules: {
         "no-restricted-imports": [
@@ -206,18 +247,25 @@ const cleanArchitectureImportRestrictions = featureNames.flatMap(
             patterns: [
               {
                 group: [
-                  "../api/**",
-                  "../adapters/**",
-                  "../services/**",
-                  "../ui/**",
+                  "./adapters/**",
+                  "../*/adapters/**",
+                  "../../api/**",
+                  "../../services/**",
+                  "../../ui/**",
+                  `~/features/${featureName}/api/**`,
+                  `~/features/${featureName}/repositories/**/adapters/**`,
+                  `~/features/${featureName}/services/**`,
+                  `~/features/${featureName}/ui/**`,
                   "~/server/api/**",
                   "~/server/auth/**",
                   "~/trpc/**",
                   "next/**",
                   "react-dom/**",
+                  "generated/**",
+                  "@prisma/**",
                 ],
                 message:
-                  "Repositories are persistence contracts. They may import domain modules, but not adapters, services, API, UI, or infrastructure.",
+                  "Repository contracts may import domain modules, but not adapters, services, API, UI, generated persistence, or infrastructure.",
               },
             ],
           },
@@ -226,8 +274,8 @@ const cleanArchitectureImportRestrictions = featureNames.flatMap(
     },
     {
       files: [
-        `src/features/${featureName}/adapters/**/*.ts`,
-        `src/features/${featureName}/adapters/**/*.tsx`,
+        `src/features/${featureName}/repositories/**/adapters/**/*.ts`,
+        `src/features/${featureName}/repositories/**/adapters/**/*.tsx`,
       ],
       rules: {
         "no-restricted-imports": [
@@ -263,9 +311,12 @@ const cleanArchitectureImportRestrictions = featureNames.flatMap(
             patterns: [
               {
                 group: [
-                  "../api/**",
-                  "../services/**",
-                  "../ui/**",
+                  "../../../api/**",
+                  "../../../services/**",
+                  "../../../ui/**",
+                  `~/features/${featureName}/api/**`,
+                  `~/features/${featureName}/services/**`,
+                  `~/features/${featureName}/ui/**`,
                   "~/server/api/**",
                   "~/server/auth/**",
                   "~/trpc/**",
@@ -325,7 +376,10 @@ const cleanArchitectureImportRestrictions = featureNames.flatMap(
               {
                 group: [
                   "../repositories/**",
-                  "../adapters/**",
+                  "../repositories/**/adapters/**",
+                  "../../repositories/**",
+                  "../../repositories/**/adapters/**",
+                  `~/features/${featureName}/repositories/**`,
                   "~/server/db",
                   "~/server/db/**",
                   "generated/**",
@@ -340,6 +394,66 @@ const cleanArchitectureImportRestrictions = featureNames.flatMap(
       },
     },
   ]
+);
+
+/** @type {import("typescript-eslint").ConfigWithExtends[]} */
+const serviceBarrelImportRestrictions = featureNames.flatMap((featureName) =>
+  (serviceFolderNamesByFeature[featureName] ?? []).map((serviceFolderName) => ({
+    files: [
+      `src/features/${featureName}/**/*.ts`,
+      `src/features/${featureName}/**/*.tsx`,
+      `!src/features/${featureName}/services/${serviceFolderName}/**/*.ts`,
+      `!src/features/${featureName}/services/${serviceFolderName}/**/*.tsx`,
+    ],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          patterns: [
+            {
+              group: [
+                `../services/${serviceFolderName}/*`,
+                `../../services/${serviceFolderName}/*`,
+                `~/features/${featureName}/services/${serviceFolderName}/*`,
+              ],
+              message: `Import ${serviceFolderName} service exports from its folder barrel instead of deep service files.`,
+            },
+          ],
+        },
+      ],
+    },
+  }))
+);
+
+/** @type {import("typescript-eslint").ConfigWithExtends[]} */
+const repositoryBarrelImportRestrictions = featureNames.flatMap((featureName) =>
+  (repositoryFolderNamesByFeature[featureName] ?? []).map(
+    (repositoryFolderName) => ({
+      files: [
+        `src/features/${featureName}/**/*.ts`,
+        `src/features/${featureName}/**/*.tsx`,
+        `!src/features/${featureName}/repositories/${repositoryFolderName}/**/*.ts`,
+        `!src/features/${featureName}/repositories/${repositoryFolderName}/**/*.tsx`,
+      ],
+      rules: {
+        "no-restricted-imports": [
+          "error",
+          {
+            patterns: [
+              {
+                group: [
+                  `../repositories/${repositoryFolderName}/repository`,
+                  `../../repositories/${repositoryFolderName}/repository`,
+                  `~/features/${featureName}/repositories/${repositoryFolderName}/repository`,
+                ],
+                message: `Import ${repositoryFolderName} repository contracts from its folder barrel instead of deep repository files.`,
+              },
+            ],
+          },
+        ],
+      },
+    })
+  )
 );
 
 export default tseslint.config(
@@ -374,6 +488,8 @@ export default tseslint.config(
   },
   ...featureBarrelImportRestrictions,
   ...cleanArchitectureImportRestrictions,
+  ...serviceBarrelImportRestrictions,
+  ...repositoryBarrelImportRestrictions,
   {
     linterOptions: {
       reportUnusedDisableDirectives: true,

@@ -15,11 +15,10 @@ src/
       domain/
       services/
       repositories/
-      adapters/
       api/
       ui/
       index.ts
-      notifications/
+    notifications/
       domain/
       api/
       index.ts
@@ -40,8 +39,8 @@ generated/
 
 - `domain/` owns business concepts, invariants, value objects, and Zod-first domain schemas.
 - `services/` owns application services: use-case workflows, input/output schemas, typed outcomes, and dependencies expressed as repository contracts.
-- `repositories/` owns persistence contracts that services depend on.
-- `adapters/` owns concrete outbound implementations, such as Prisma adapters, generated schema usage, and persistence-to-domain mapping.
+- `repositories/` owns persistence contracts that services depend on, grouped by feature concept.
+- `repositories/<concept>/adapters/` owns concrete outbound implementations, such as Prisma adapters, generated schema usage, and persistence-to-domain mapping.
 - `api/` owns tRPC routers and transport translation.
 - `ui/` owns feature containers, presentational components, and feature hooks.
 - `src/app` is routing composition only. Route files import feature page containers.
@@ -71,15 +70,29 @@ Use generated Prisma/Zod schemas in repositories and API-adjacent DTO compositio
 
 ## Services
 
-Application services are plain functions with explicit repository dependencies. They are added when an operation has real workflow orchestration, not for every endpoint by default.
+Application services are classes with constructor-injected repository dependencies. They are added when an operation has real workflow orchestration, not for every endpoint by default.
 
 Command-style workflows usually go through services. Boring read endpoints may call repositories directly from `api/` as long as the router stays thin and avoids business decisions. Business reads that combine policy, attendee-specific state, or multiple repositories should use a service.
 
+Service command schemas, output schemas, use-case interfaces, and command result types live under a service-specific folder such as `services/registration/commands.ts`. The service implementation lives beside them as `service.ts`, tests live beside the service as `service.test.ts`, and external imports use the service folder barrel at `services/registration/index.ts`.
+
 ```ts
-export async function registerForEvent(
-  input: RegisterForEventInput,
-  repositories: RegisterForEventRepositories
-): Promise<RegisterForEventOutput> {}
+export interface CreateEventUseCase {
+  createEvent(input: CreateEventInput): Promise<CreateEventOutput>;
+}
+
+export class EventService implements CreateEventUseCase {
+  constructor(private readonly repositories: EventServiceRepositories) {}
+}
+
+export class RegistrationService
+  implements
+    RegisterForEventUseCase,
+    CancelRegistrationUseCase,
+    LeaveWaitlistUseCase
+{
+  constructor(private readonly repositories: RegistrationServiceRepositories) {}
+}
 ```
 
 Each service owns its specific input schema, output schema, result type, and repository dependency type. Shared business concepts stay in `domain/`.
@@ -112,29 +125,38 @@ Throw only for system failures, authorization failures, permission failures, or 
 
 Repository contracts are named after feature concepts, such as `EventRepository` and `RegistrationRepository`, but their methods should be shaped by workflows rather than generic CRUD. Services depend on the narrow subset of repository methods they need, for example through `Pick<EventRepository, "findRegistrationSnapshot">`, so the repository name stays familiar without turning each service into a broad persistence client.
 
-Reusable repository contracts live in `repositories/`. Service files define only the narrowed dependency composition they consume.
+Reusable repository contracts live in concept-specific folders under `repositories/`. Service files define only the narrowed dependency composition they consume.
 
-Concrete outbound adapters live in `adapters/`. Prisma adapters expose factories for service dependencies:
+Concrete outbound adapters live beside the repository contract they implement. Prisma adapters expose factories for service dependencies:
 
 ```txt
-src/features/events/adapters/
-  prisma-event-adapter.ts
-  prisma-registration-adapter.ts
-  helper.ts
+src/features/events/repositories/
+  event/
+    index.ts
+    repository.ts
+    adapters/
+      prisma.ts
+      prisma-mappers.ts
+  registration/
+    index.ts
+    repository.ts
+    adapters/
+      prisma.ts
+      prisma-mappers.ts
 ```
 
 ```ts
-export function createPrismaRegisterForEventRepositories(
-  db: PrismaClient
-): RegisterForEventRepositories {
-  return {
-    events: createPrismaEventRepository(db),
-    registrations: createPrismaRegistrationRepository(db),
-  };
-}
+const registrationService = new RegistrationService({
+  events: createPrismaEventRepository(db),
+  registrations: createPrismaRegistrationRepository(db),
+});
+
+const eventService = new EventService({
+  events: createPrismaEventRepository(db),
+});
 ```
 
-Services own transaction boundaries through repository dependencies. Prisma transaction clients stay inside repositories.
+Services own transaction boundaries through repository dependencies. Prisma transaction clients stay inside repository adapters.
 
 ## API
 
@@ -203,9 +225,9 @@ Generated files are committed so the template is inspectable after checkout. Reg
 Use Vitest for domain and service tests. These tests should run without Next.js, tRPC, Better Auth, Prisma, or a database.
 
 ```txt
-src/features/events/domain/event.test.ts
-src/features/events/services/register-for-event.test.ts
-src/features/events/services/cancel-registration.test.ts
+src/features/events/domain/tests/registration.test.ts
+src/features/events/services/event/service.test.ts
+src/features/events/services/registration/service.test.ts
 ```
 
 The architecture should make use-case tests fast and dependency-light.

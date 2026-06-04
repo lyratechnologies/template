@@ -1,41 +1,37 @@
 export {
-  cancelRegistration,
+  CreateEventInputSchema,
+  CreateEventOutputSchema,
+  EventService,
+  type CreateEventInput,
+  type CreateEventOutput,
+  type CreateEventUseCase,
+  type EventServiceRepositories,
+} from "./services/event";
+export {
   CancelRegistrationInputSchema,
   CancelRegistrationOutputSchema,
   CancelRegistrationRejectionReasonSchema,
-  type CancelRegistrationInput,
-  type CancelRegistrationOutput,
-  type CancelRegistrationRejectionReason,
-  type CancelRegistrationRepositories,
-} from "./services/cancel-registration";
-export {
-  createEvent,
-  CreateEventInputSchema,
-  CreateEventOutputSchema,
-  type CreateEventInput,
-  type CreateEventOutput,
-  type CreateEventRepositories,
-} from "./services/create-event";
-export {
-  leaveWaitlist,
   LeaveWaitlistInputSchema,
   LeaveWaitlistOutputSchema,
   LeaveWaitlistRejectionReasonSchema,
-  type LeaveWaitlistInput,
-  type LeaveWaitlistOutput,
-  type LeaveWaitlistRejectionReason,
-  type LeaveWaitlistRepositories,
-} from "./services/leave-waitlist";
-export {
-  registerForEvent,
+  RegistrationService,
   RegisterForEventInputSchema,
   RegisterForEventOutputSchema,
   RegisterForEventRejectionReasonSchema,
+  type CancelRegistrationInput,
+  type CancelRegistrationOutput,
+  type CancelRegistrationRejectionReason,
+  type CancelRegistrationUseCase,
+  type LeaveWaitlistInput,
+  type LeaveWaitlistOutput,
+  type LeaveWaitlistRejectionReason,
+  type LeaveWaitlistUseCase,
   type RegisterForEventInput,
   type RegisterForEventOutput,
   type RegisterForEventRejectionReason,
-  type RegisterForEventRepositories,
-} from "./services/register-for-event";
+  type RegisterForEventUseCase,
+  type RegistrationServiceRepositories,
+} from "./services/registration";
 export {
   EventRegistrationEventSchema,
   EventRegistrationSnapshotSchema,
@@ -64,5 +60,5 @@ export {
 export type {
   CreateEventRecordInput,
   EventRepository,
-} from "./repositories/event-repository";
-export type { RegistrationRepository } from "./repositories/registration-repository";
+} from "./repositories/event";
+export type { RegistrationRepository } from "./repositories/registration";

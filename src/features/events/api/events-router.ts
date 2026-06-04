@@ -7,29 +7,25 @@ import {
   publicProcedure,
 } from "~/server/api/trpc";
 
-import { createPrismaEventRepository } from "../adapters/prisma-event-adapter";
-import { createPrismaRegistrationRepository } from "../adapters/prisma-registration-adapter";
+import { createPrismaEventRepository } from "../repositories/event/adapters/prisma";
+import { createPrismaRegistrationRepository } from "../repositories/registration/adapters/prisma";
+import { CreateEventInputSchema, EventService } from "../services/event";
 import {
-  cancelRegistration,
   CancelRegistrationInputSchema,
-} from "../services/cancel-registration";
-import { createEvent, CreateEventInputSchema } from "../services/create-event";
-import {
-  leaveWaitlist,
   LeaveWaitlistInputSchema,
-} from "../services/leave-waitlist";
-import {
-  registerForEvent,
   RegisterForEventInputSchema,
-} from "../services/register-for-event";
+  RegistrationService,
+} from "../services/registration";
 
 export const eventsRouter = createTRPCRouter({
   create: protectedProcedure
     .input(CreateEventInputSchema)
     .mutation(async ({ ctx, input }) => {
-      return createEvent(input, {
+      const service = new EventService({
         events: createPrismaEventRepository(ctx.db),
       });
+
+      return service.createEvent(input);
     }),
 
   list: publicProcedure.query(async ({ ctx }) => {
@@ -41,17 +37,15 @@ export const eventsRouter = createTRPCRouter({
   registerForEvent: protectedProcedure
     .input(RegisterForEventInputSchema.pick({ eventId: true }))
     .mutation(async ({ ctx, input }) => {
-      const result = await registerForEvent(
-        {
-          attendeeId: ctx.session.user.id,
-          eventId: input.eventId,
-          requestedAt: new Date(),
-        },
-        {
-          events: createPrismaEventRepository(ctx.db),
-          registrations: createPrismaRegistrationRepository(ctx.db),
-        }
-      );
+      const service = new RegistrationService({
+        events: createPrismaEventRepository(ctx.db),
+        registrations: createPrismaRegistrationRepository(ctx.db),
+      });
+      const result = await service.registerForEvent({
+        attendeeId: ctx.session.user.id,
+        eventId: input.eventId,
+        requestedAt: new Date(),
+      });
 
       const notifications = await dispatchNotifications(result.events);
 
@@ -61,16 +55,15 @@ export const eventsRouter = createTRPCRouter({
   cancelRegistration: protectedProcedure
     .input(CancelRegistrationInputSchema.pick({ eventId: true }))
     .mutation(async ({ ctx, input }) => {
-      const result = await cancelRegistration(
-        {
-          attendeeId: ctx.session.user.id,
-          eventId: input.eventId,
-          requestedAt: new Date(),
-        },
-        {
-          registrations: createPrismaRegistrationRepository(ctx.db),
-        }
-      );
+      const service = new RegistrationService({
+        events: createPrismaEventRepository(ctx.db),
+        registrations: createPrismaRegistrationRepository(ctx.db),
+      });
+      const result = await service.cancelRegistration({
+        attendeeId: ctx.session.user.id,
+        eventId: input.eventId,
+        requestedAt: new Date(),
+      });
 
       const notifications = await dispatchNotifications(result.events);
 
@@ -80,16 +73,15 @@ export const eventsRouter = createTRPCRouter({
   leaveWaitlist: protectedProcedure
     .input(LeaveWaitlistInputSchema.pick({ eventId: true }))
     .mutation(async ({ ctx, input }) => {
-      const result = await leaveWaitlist(
-        {
-          attendeeId: ctx.session.user.id,
-          eventId: input.eventId,
-          requestedAt: new Date(),
-        },
-        {
-          registrations: createPrismaRegistrationRepository(ctx.db),
-        }
-      );
+      const service = new RegistrationService({
+        events: createPrismaEventRepository(ctx.db),
+        registrations: createPrismaRegistrationRepository(ctx.db),
+      });
+      const result = await service.leaveWaitlist({
+        attendeeId: ctx.session.user.id,
+        eventId: input.eventId,
+        requestedAt: new Date(),
+      });
 
       const notifications = await dispatchNotifications(result.events);
 

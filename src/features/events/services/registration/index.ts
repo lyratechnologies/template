@@ -1,0 +1,27 @@
+export {
+  CancelRegistrationInputSchema,
+  CancelRegistrationOutputSchema,
+  CancelRegistrationRejectionReasonSchema,
+  LeaveWaitlistInputSchema,
+  LeaveWaitlistOutputSchema,
+  LeaveWaitlistRejectionReasonSchema,
+  RegisterForEventInputSchema,
+  RegisterForEventOutputSchema,
+  RegisterForEventRejectionReasonSchema,
+  type CancelRegistrationInput,
+  type CancelRegistrationOutput,
+  type CancelRegistrationRejectionReason,
+  type CancelRegistrationUseCase,
+  type LeaveWaitlistInput,
+  type LeaveWaitlistOutput,
+  type LeaveWaitlistRejectionReason,
+  type LeaveWaitlistUseCase,
+  type RegisterForEventInput,
+  type RegisterForEventOutput,
+  type RegisterForEventRejectionReason,
+  type RegisterForEventUseCase,
+} from "./commands";
+export {
+  RegistrationService,
+  type RegistrationServiceRepositories,
+} from "./service";

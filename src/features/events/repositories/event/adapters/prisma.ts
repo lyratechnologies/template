@@ -1,7 +1,7 @@
-import type { EventRepository } from "../repositories/event-repository";
+import type { EventRepository } from "../repository";
 import type { PrismaClient } from "generated/prisma/client";
 
-import { toEventRegistrationSnapshot, toEventSummary } from "./helper";
+import { toEventRegistrationSnapshot, toEventSummary } from "./prisma-mappers";
 
 export function createPrismaEventRepository(db: PrismaClient): EventRepository {
   return {

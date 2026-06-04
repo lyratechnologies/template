@@ -40,7 +40,6 @@ src/features/
     domain/
     services/
     repositories/
-    adapters/
     api/
     ui/
     index.ts
@@ -66,7 +65,7 @@ Domain code lives in `domain/`. It owns business concepts, invariants, domain ev
 src/features/events/domain/
   event.ts
   registration.ts
-  test/
+  tests/
     registration.test.ts
 ```
 
@@ -91,29 +90,44 @@ export function getActiveWaitlistRank(
 
 ### 3. Services Represent Use-Case Workflows
 
-Application services live in `services/`. They are plain TypeScript functions that orchestrate workflows using explicit repository dependencies.
+Application services live in `services/`. They are TypeScript classes that orchestrate workflows using constructor-injected repository dependencies.
 
 ```txt
 src/features/events/services/
-  register-for-event.ts
-  cancel-registration.ts
-  leave-waitlist.ts
-  create-event.ts
-  test/
-    register-for-event.test.ts
-    cancel-registration.test.ts
+  event/
+    commands.ts
+    index.ts
+    service.ts
+    service.test.ts
+  registration/
+    commands.ts
+    index.ts
+    service.ts
+    service.test.ts
 ```
 
 Services are added when an operation has real business orchestration. They are not required for every tiny read endpoint.
 
+Each service folder exposes a local `index.ts` barrel. Code outside that service folder imports from `../services/event` or `../services/registration`, while files inside the service folder can import concrete siblings such as `./commands` and `./service`.
+
 Example service shape:
 
 ```ts
-export async function registerForEvent(
-  input: RegisterForEventInput,
-  repositories: RegisterForEventRepositories
-): Promise<RegisterForEventOutput> {
-  // use domain rules and repository contracts
+export interface CreateEventUseCase {
+  createEvent(input: CreateEventInput): Promise<CreateEventOutput>;
+}
+
+export class EventService implements CreateEventUseCase {
+  constructor(private readonly repositories: EventServiceRepositories) {}
+}
+
+export class RegistrationService
+  implements
+    RegisterForEventUseCase,
+    CancelRegistrationUseCase,
+    LeaveWaitlistUseCase
+{
+  constructor(private readonly repositories: RegistrationServiceRepositories) {}
 }
 ```
 
@@ -142,12 +156,22 @@ type RegisterForEventOutput =
 
 ### 4. Repositories Define Ports, Adapters Implement Them
 
-Repository contracts live in `repositories/`. They define the persistence operations that services need without committing those services to Prisma, SQL, HTTP, or any other concrete technology.
+Repository contracts live under concept-specific folders in `repositories/`. They define the persistence operations that services need without committing those services to Prisma, SQL, HTTP, or any other concrete technology.
 
 ```txt
 src/features/events/repositories/
-  event-repository.ts
-  registration-repository.ts
+  event/
+    index.ts
+    repository.ts
+    adapters/
+      prisma.ts
+      prisma-mappers.ts
+  registration/
+    index.ts
+    repository.ts
+    adapters/
+      prisma.ts
+      prisma-mappers.ts
 ```
 
 Repository interfaces are named after feature concepts, but methods are shaped by workflows rather than generic CRUD.
@@ -162,14 +186,7 @@ export interface EventRepository {
 }
 ```
 
-Concrete outbound adapters live in `adapters/`.
-
-```txt
-src/features/events/adapters/
-  prisma-event-adapter.ts
-  prisma-registration-adapter.ts
-  helper.ts
-```
+Concrete outbound adapters live beside the repository contract they implement, under `repositories/<concept>/adapters/`.
 
 The Prisma adapter imports generated Prisma types and maps database records into domain summaries. Generated Prisma types stay in adapters, not in domain or service code.
 
@@ -237,9 +254,9 @@ Feature internals should not import their own `index.ts` barrel. Inside a featur
 // Good inside src/features/events/api/events-router.ts
 
 // Avoid inside src/features/events/**
-import { registerForEvent } from "~/features/events";
+import { RegistrationService } from "~/features/events";
 
-import { registerForEvent } from "../services/register-for-event";
+import { RegistrationService } from "../services/registration";
 ```
 
 Cross-feature imports should go through the other feature's public `index.ts`.
@@ -276,11 +293,7 @@ feature/services
 
 feature/repositories
   -> feature domain
-
-feature/adapters
-  -> feature domain
-  -> feature repository contracts
-  -> generated Prisma / persistence adapters
+  -> generated Prisma / persistence adapters from repositories/<concept>/adapters
 
 feature/domain
   -> framework-free libraries only
@@ -316,16 +329,16 @@ Visualized:
  hooks, utilities
 ```
 
-Repositories sit beside services as adapters:
+Repository adapters sit behind repository contracts:
 
 ```txt
 feature/api
     |
     v
-feature/services  --->  feature/repositories/contracts
-    |                         ^
-    v                         |
-feature/domain       feature/adapters/prisma
+feature/services  --->  feature/repositories/<concept>
+    |                         |
+    v                         v
+feature/domain       feature/repositories/<concept>/adapters/prisma
                               |
                               v
                       generated/prisma + database
@@ -347,20 +360,31 @@ src/
       domain/
         event.ts
         registration.ts
-        test/
+        tests/
       services/
-        create-event.ts
-        register-for-event.ts
-        cancel-registration.ts
-        leave-waitlist.ts
-        test/
+        event/
+          commands.ts
+          index.ts
+          service.ts
+          service.test.ts
+        registration/
+          commands.ts
+          index.ts
+          service.ts
+          service.test.ts
       repositories/
-        event-repository.ts
-        registration-repository.ts
-      adapters/
-        prisma-event-adapter.ts
-        prisma-registration-adapter.ts
-        helper.ts
+        event/
+          index.ts
+          repository.ts
+          adapters/
+            prisma.ts
+            prisma-mappers.ts
+        registration/
+          index.ts
+          repository.ts
+          adapters/
+            prisma.ts
+            prisma-mappers.ts
       api/
         events-router.ts
       ui/
@@ -379,7 +403,7 @@ src/
     notifications/
       domain/
         notification.ts
-        test/
+        tests/
       api/
         notifications-router.ts
       index.ts
@@ -530,9 +554,10 @@ bun run db:studio
 Domain and service tests run without Next.js, tRPC, Better Auth, Prisma, or a database. This keeps the core business rules fast and deterministic.
 
 ```txt
-src/features/events/domain/test/
-src/features/events/services/test/
-src/features/notifications/domain/test/
+src/features/events/domain/tests/
+src/features/events/services/event/service.test.ts
+src/features/events/services/registration/service.test.ts
+src/features/notifications/domain/tests/
 ```
 
 Run:

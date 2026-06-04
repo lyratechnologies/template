@@ -1,4 +1,4 @@
-import type { EventRegistrationSnapshot, EventSummary } from "../domain/event";
+import type { EventRegistrationSnapshot, EventSummary } from "../../domain/event";
 
 export type CreateEventRecordInput = {
   title: string;

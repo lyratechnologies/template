@@ -1,11 +1,11 @@
-import type { EventRegistrationSnapshot, EventSummary } from "../domain/event";
+import type { EventRegistrationSnapshot, EventSummary } from "../../../domain/event";
 import type {
   AttendeeEventParticipation,
   RegistrationSummary,
   WaitlistEntrySummary,
-} from "../domain/registration";
+} from "../../../domain/registration";
 
-import { getActiveWaitlistRank } from "../domain/registration";
+import { getActiveWaitlistRank } from "../../../domain/registration";
 
 export function toEventRegistrationSnapshot(event: {
   id: string;
@@ -72,7 +72,7 @@ export function toEventSummary(
   };
 }
 
-export function toRegistrationSummary(registration: {
+function toRegistrationSummary(registration: {
   id: string;
   attendeeId: string;
   eventId: string;
@@ -85,7 +85,7 @@ export function toRegistrationSummary(registration: {
   };
 }
 
-export function toWaitlistEntrySummary(
+function toWaitlistEntrySummary(
   waitlistEntry: {
     id: string;
     attendeeId: string;

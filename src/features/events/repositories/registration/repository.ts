@@ -1,7 +1,7 @@
 import type {
   RegistrationSummary,
   WaitlistEntrySummary,
-} from "../domain/registration";
+} from "../../domain/registration";
 
 export type RegistrationRepository = {
   findActiveRegistration: (input: {
